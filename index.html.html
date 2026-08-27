@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planejamento Estratégico de Qualidade — Milplan</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root{
+  --navy-900:#0b1c33;
+  --navy-800:#122c4f;
+  --navy-700:#193a66;
+  --red-600:#a83232;
+  --red-700:#8c2828;
+  --gold-500:#e0a83e;
+  --blue-400:#5b8fc9;
+  --bg:#eef1f5;
+  --card:#ffffff;
+  --text-dark:#1b2430;
+  --text-muted:#6b7480;
+  --border:#e1e5eb;
+  --green-ok:#2f8f5b;
+  --amber-warn:#c78a1e;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text-dark);
+  font-family:'Inter',sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,.display{
+  font-family:'Barlow Condensed',sans-serif;
+  text-transform:uppercase;
+  letter-spacing:.02em;
+}
+.app{max-width:1280px;margin:0 auto;padding:0 0 60px;}
+
+/* HEADER */
+.header{
+  background:linear-gradient(135deg,var(--navy-900),var(--navy-800));
+  border-bottom:4px solid var(--red-600);
+  padding:22px 28px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:16px;
+}
+.brand{display:flex;align-items:center;gap:14px;}
+.brand-mark{
+  width:auto;height:54px;
+  display:flex;align-items:center;justify-content:center;
+  background:#fff;
+  border-radius:8px;
+  padding:6px 12px;
+  box-shadow:0 1px 4px rgba(0,0,0,.15);
+}
+.brand-mark img{height:100%;width:auto;object-fit:contain;}
+.brand-text h1{color:#fff;font-size:24px;margin:0;font-weight:700;line-height:1.1;}
+.brand-text .sub{color:#a9bcd6;font-size:12px;letter-spacing:.12em;text-transform:uppercase;margin-top:2px;}
+.mode-pill{
+  font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  background:rgba(255,255,255,.08);color:#cfe0f5;
+  border:1px solid rgba(255,255,255,.18);
+  padding:6px 12px;border-radius:20px;
+  display:flex;align-items:center;gap:8px;
+}
+.mode-pill.edit{background:rgba(224,168,62,.15);border-color:rgba(224,168,62,.4);color:var(--gold-500);}
+
+/* CONTROLS BAR */
+.controls{
+  background:var(--card);
+  margin:20px 28px 0;
+  border-radius:12px;
+  border:1px solid var(--border);
+  padding:16px 20px;
+  display:flex;
+  gap:20px;
+  align-items:flex-end;
+  flex-wrap:wrap;
+  box-shadow:0 1px 3px rgba(15,30,55,.04);
+}
+.field{display:flex;flex-direction:column;gap:6px;}
+.field label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);font-weight:600;}
+select{
+  font-family:'Inter',sans-serif;
+  font-size:14px;font-weight:600;
+  padding:9px 32px 9px 12px;
+  border-radius:8px;
+  border:1.5px solid var(--border);
+  background:#fff;
+  color:var(--navy-900);
+  min-width:200px;
+  appearance:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%23193a66'/></svg>");
+  background-repeat:no-repeat;
+  background-position:right 12px center;
+  cursor:pointer;
+}
+.tabbar{display:flex;gap:4px;margin-left:auto;}
+.tabbtn{
+  font-family:'Inter',sans-serif;font-weight:600;font-size:13px;
+  padding:9px 16px;border-radius:8px;border:1.5px solid var(--border);
+  background:#fff;color:var(--text-muted);cursor:pointer;
+}
+.tabbtn.active{background:var(--navy-800);color:#fff;border-color:var(--navy-800);}
+.linkbtn{
+  font-family:'Inter',sans-serif;font-weight:600;font-size:13px;
+  padding:9px 16px;border-radius:8px;border:1.5px solid var(--gold-500);
+  background:#fff8ea;color:var(--amber-warn);cursor:pointer;
+}
+.linkbtn:hover{background:#fdeecb;}
+
+/* SECTIONS */
+.section{margin:22px 28px 0;}
+.section-title{
+  font-size:20px;font-weight:700;color:var(--navy-900);
+  display:flex;align-items:center;gap:10px;margin-bottom:12px;
+}
+.section-title .bar{width:4px;height:18px;background:var(--red-600);border-radius:2px;}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;}
+.kpi{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:18px 20px;box-shadow:0 1px 3px rgba(15,30,55,.04);
+  position:relative;overflow:hidden;
+}
+.kpi .label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);font-weight:700;}
+.kpi .value{font-family:'Barlow Condensed',sans-serif;font-size:38px;font-weight:700;color:var(--navy-900);margin-top:4px;}
+.kpi .value.ok{color:var(--green-ok);}
+.kpi .value.warn{color:var(--amber-warn);}
+.kpi .note{font-size:12px;color:var(--text-muted);margin-top:2px;}
+
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:20px;box-shadow:0 1px 3px rgba(15,30,55,.04);
+}
+
+/* RANKING BARS */
+.rank-row{display:flex;align-items:center;gap:10px;padding:7px 0;}
+.rank-label{width:110px;font-size:12.5px;font-weight:700;color:var(--navy-900);flex-shrink:0;}
+.rank-track{flex:1;background:#eef1f6;border-radius:5px;height:20px;position:relative;overflow:hidden;}
+.rank-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--navy-700),var(--blue-400));}
+.rank-fill.low{background:linear-gradient(90deg,#b5451f,var(--gold-500));}
+.rank-pct{width:56px;text-align:right;font-size:12.5px;font-weight:700;color:var(--navy-900);flex-shrink:0;}
+.rank-row.me .rank-label{color:var(--red-600);}
+.rank-row.me .rank-track{outline:2px solid var(--red-600);outline-offset:1px;}
+
+/* SETOR TABLE */
+.setor-block{border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden;}
+.setor-head{
+  background:var(--navy-800);color:#fff;padding:12px 16px;
+  display:flex;align-items:center;justify-content:space-between;cursor:pointer;
+  user-select:none;
+}
+.setor-head .name{font-weight:700;font-size:14px;letter-spacing:.03em;}
+.setor-head .stats{display:flex;align-items:center;gap:16px;font-size:12.5px;}
+.setor-head .stats b{color:var(--gold-500);}
+.setor-head .caret{transition:transform .15s;font-size:12px;}
+.setor-head.open .caret{transform:rotate(90deg);}
+.setor-body{display:none;}
+.setor-body.open{display:block;}
+.trim-group{border-top:1px solid var(--border);}
+.trim-title{
+  padding:9px 16px;background:#f5f7fa;font-size:11.5px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.trim-title .na{color:var(--green-ok);font-weight:700;}
+.acao-row{
+  padding:9px 16px;display:flex;align-items:center;gap:12px;
+  border-top:1px solid #f0f2f5;font-size:13px;
+}
+.acao-row:hover{background:#fafbfc;}
+.acao-row .txt{flex:1;color:var(--text-dark);}
+.acao-row.done .txt{color:var(--text-muted);}
+.chk{
+  width:20px;height:20px;border-radius:5px;border:2px solid var(--border);
+  cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  background:#fff;transition:.1s;
+}
+.chk.checked{background:var(--green-ok);border-color:var(--green-ok);}
+.chk.checked::after{content:'✓';color:#fff;font-size:12px;font-weight:700;}
+.chk.readonly{cursor:default;}
+.pend-tag{
+  font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
+  padding:2px 8px;border-radius:10px;background:#fdeceb;color:var(--red-600);
+}
+
+/* PENDENCIAS LIST */
+.pend-item{
+  display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid #f0f2f5;
+}
+.pend-item:first-child{border-top:none;}
+.pend-dot{width:8px;height:8px;border-radius:50%;background:var(--red-600);margin-top:6px;flex-shrink:0;}
+.pend-main .t{font-size:13.5px;font-weight:600;color:var(--text-dark);}
+.pend-main .m{font-size:12px;color:var(--text-muted);margin-top:1px;}
+
+.empty{text-align:center;color:var(--text-muted);padding:30px 10px;font-size:13.5px;}
+.empty b{color:var(--green-ok);}
+
+.vig-strip{display:flex;gap:3px;margin-top:6px;}
+.vig-seg{flex:1;height:6px;border-radius:3px;background:#e1e5eb;}
+.vig-seg.on{background:var(--blue-400);}
+
+.gestor-banner{
+  background:#fff8ea;border:1px solid #f0d99a;color:#7a5a10;
+  border-radius:10px;padding:12px 16px;font-size:13px;margin:20px 28px 0;
+  display:flex;gap:10px;align-items:center;
+}
+.gestor-banner b{color:var(--amber-warn);}
+
+.footer-note{
+  text-align:center;color:var(--text-muted);font-size:11.5px;padding:30px 20px 0;
+}
+.footer-link{color:var(--text-muted);text-decoration:underline;text-decoration-color:rgba(102,115,140,.35);cursor:pointer;}
+.footer-link:hover{color:var(--navy-800);}
+.trim-chip{font-family:'Inter',sans-serif;font-size:12px;font-weight:600;padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--text-muted);cursor:pointer;transition:.15s;}
+.trim-chip:hover{border-color:var(--navy-800);}
+.trim-chip.on{background:var(--navy-800);color:#fff;border-color:var(--navy-800);}
+
+.save-status{
+  font-size:11.5px;font-weight:600;padding:5px 12px;border-radius:20px;
+  display:flex;align-items:center;gap:6px;
+}
+.save-status.pending{background:rgba(255,255,255,.08);color:#cfe0f5;}
+.save-status.saving{background:rgba(224,168,62,.15);color:var(--gold-500);}
+.save-status.saved{background:rgba(47,143,91,.15);color:#7fd9a5;}
+.save-status.error{background:rgba(168,50,50,.2);color:#ff9d9d;}
+
+.note-toggle{
+  width:26px;height:26px;border-radius:6px;border:1.5px solid var(--border);
+  background:#fff;color:var(--text-muted);cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:13px;
+}
+.note-toggle.has-note{background:#fff8ea;border-color:var(--gold-500);color:var(--amber-warn);}
+.note-toggle:hover{background:#f5f7fa;}
+.acao-wrap{border-top:1px solid #f0f2f5;}
+.acao-wrap:first-child{border-top:none;}
+.acao-wrap .acao-row{border-top:none;}
+.note-area{padding:0 16px 12px 48px;}
+.note-area textarea{
+  width:100%;min-height:56px;border:1.5px solid #f0d99a;background:#fffdf5;
+  border-radius:8px;padding:8px 10px;font-family:'Inter',sans-serif;font-size:12.5px;
+  color:var(--text-dark);resize:vertical;
+}
+.note-area .hint{font-size:10.5px;color:var(--text-muted);margin-top:3px;}
+.obs-display{
+  margin-top:6px;padding:8px 10px;background:#fff8ea;border:1px solid #f0d99a;
+  border-radius:8px;font-size:12px;color:#7a5a10;
+}
+.obs-display b{color:var(--amber-warn);}
+
+@media (max-width:640px){
+  .header{padding:16px 16px;}
+  .controls{margin:16px 16px 0;padding:14px;}
+  .section{margin:18px 16px 0;}
+  .tabbar{margin-left:0;width:100%;}
+  select{min-width:140px;flex:1;}
+}
+
+.chk-group{display:flex;gap:4px;flex-shrink:0;}
+.chk-chip{
+  width:22px;height:22px;border-radius:5px;border:2px solid var(--border);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  background:#fff;font-size:11px;font-weight:700;color:var(--text-muted);transition:.1s;
+  flex-shrink:0;
+}
+.chk-chip.checked{background:var(--green-ok);border-color:var(--green-ok);color:#fff;}
+.chk-chip.readonly{cursor:default;}
+.rec-hint{font-size:10px;color:var(--text-muted);margin-left:2px;}
+
+.data-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:14px;}
+.data-table th{
+  background:var(--navy-800);color:#fff;text-align:left;font-size:11.5px;font-weight:700;
+  letter-spacing:.02em;padding:9px 12px;
+}
+.data-table th:first-child{border-radius:6px 0 0 6px;}
+.data-table th:last-child{border-radius:0 6px 6px 0;}
+.data-table td{padding:7px 10px;border-bottom:1px solid #f0f2f5;vertical-align:middle;}
+.data-table tr:hover td{background:#fafbfc;}
+.cad-input{
+  font-family:'Inter',sans-serif;font-size:13px;padding:6px 9px;border:1px solid var(--border);
+  border-radius:6px;background:#fff;color:var(--text-dark);width:100%;
+}
+.cad-form{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;border-top:1px solid var(--border);padding-top:14px;}
+.cad-form .field{min-width:140px;}
+.cad-form select{min-width:90px;}
+.danger-btn{border-color:var(--red-600) !important;color:var(--red-600) !important;background:#fdeceb !important;}
+.danger-btn:hover{background:#fbdedb !important;}
+.empty-cad{text-align:center;color:var(--text-muted);padding:20px 10px;font-size:13px;}
+.icon-btn{
+  width:34px;height:34px;border-radius:8px;border:1.5px solid var(--border);
+  background:#fff;color:var(--text-muted);font-size:15px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:.15s;
+}
+.icon-btn:hover{background:#f5f6f8;color:var(--navy-800);}
+.icon-btn:disabled{opacity:.4;cursor:default;}
+#helpContent h2{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--navy-800);margin:0 0 4px;}
+#helpContent .help-sub{font-size:12.5px;color:var(--text-muted);margin-bottom:18px;}
+#helpContent h3{font-size:14px;font-weight:700;color:var(--navy-800);margin:20px 0 8px;display:flex;align-items:center;gap:6px;}
+#helpContent h3:first-of-type{margin-top:0;}
+#helpContent p{font-size:13px;line-height:1.6;color:var(--text-dark);margin:0 0 8px;}
+#helpContent ul{margin:0 0 8px;padding-left:20px;}
+#helpContent li{font-size:13px;line-height:1.65;color:var(--text-dark);margin-bottom:4px;}
+#helpContent table{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0 14px;}
+#helpContent th{background:var(--navy-800);color:#fff;text-align:left;padding:6px 8px;font-weight:600;}
+#helpContent td{padding:6px 8px;border-bottom:1px solid #f0f2f5;}
+#helpContent .badge-mini{display:inline-block;background:#eef1f6;color:var(--navy-800);border-radius:4px;padding:1px 6px;font-size:11.5px;font-weight:600;}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+
+<div class="app">
+  <div class="header">
+    <div class="brand">
+      <div class="brand-mark"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfQAAAGJCAYAAAB8asGVAAAACXBIWXMAADr5AAA6+QE4aZ7bAAAgAElEQVR4nO3dTWwk54Gf8X/PypIiK+EsFo5HSIBpK/DCChYg+2IDvkz7oKOgMQI0gVymdNuLSDoOAigXtw6BT4ZIGsgtmJ5TQl5MrY86qAcLBNAmATnAAja8gMwBAnh2HWSHsa2VtLY6h653pqe7qru6ut56v54fIFgmZ6pLZFU99fFWVWcymQhI1Qev3sgkHUrqv/7xowvHs4OKPnj1xo6ksaSD1z9+NHI7N4AfrrmeAcCVPOZ3JW1JGueRgOdmYr4l6W7+ewSSR9CRpJmYG0Q9AHMxN4g6IIKOBBXE3CDqHiuJuUHUkTyCjqQsiblB1D20IuYGUUfSCDqSUSHmBlH3SMWYG0QdySLoSMIaMTeIugfWjLlB1JEkgo7o1Yi5QdQdqhlzg6gjOQQdUdsg5gZRd2DDmBtEHUkh6IhWAzE3iHqLGoq5QdSRDIKOKDUYc4Oot6DhmBtEHUkg6IiOhZgbRN0iSzE3iDqiR9ARFYsxN4i6BZZjbhB1RI2gIxotxNwg6g1qKeYGUUe0CDqi0GLMDaLegJZjbhB1RImgI3gOYm4Q9Q04irlB1BEdgo6gOYy5QdRrcBxzg6gjKgQdwfIg5gZRX4MnMTeIOqJB0BEkj2JuEPUKPIu5QdQRBYKO4HgYc4OoL+FpzA2ijuARdATF45gbRL2A5zE3iDqCRtARjABibhD1GYHE3CDqCBZBRxACirlB1BVczA2ijiARdHgvwJgbSUc90JgbRB3BIejwWsAxN5KMeuAxN4g6gkLQ4a0IYm4kFfVIYm4QdQSDoMNLEcXcSCLqkcXcIOoIAkGHdyKMuRF11CONuUHU4T2CDq9EHHMjyqhHHnODqMNrBB3eSCDmRlRRTyTmBlGHtwg6vJBQzI0oop5YzA2iDi8RdDiXYMyNoKOeaMwNog7vEHQ4lXDMjSCjnnjMDaIOrxB0OEPMnwgq6sT8GUQd3iDocIKYLwgi6sS8EFGHFwg6WkfMS3kddWK+FFGHcwQdrSLmK3kZdWJeCVGHUwQdrSHmlXkVdWK+FqIOZwg6WkHM1+ZF1Il5LUQdThB0WOd7zD/86p/ql9e/4no2ijiNuu8x/93zL+rkFS9OYhQh6mgdQYdVIcT8h5/e0Pc7rxH1GSHE/J2tb+q/fPLP9ONXvuV6dsoQdbSKoMOaUGIuSb/9QkQ9F0rMf/759P//9JMXiDoggg5LQoq5QdTDi7lB1AGCDgtCjLmRctRDjblB1JE6go5GhRxzI8Wohx5zg6gjZQQdjYkh5kZKUY8l5gZRR6oIOhoRU8yNFKIeW8wNoo4UEXRsLIKY35P0oOgbMUc9gphfSXq/7JtEHakh6NhIDDGfnJ9mkvpKKOqRxLw/OT+9rekOWSGijpQQdNQWUcw1OT99rESiHlHMLyQp/x0SdSSPoKOWmGJupBD12GJuEHWAoKOGGGNuxBz1WGNuEHWkjqBjLTHH3Igx6rHH3CDqSBlBR2UpxNyIKeqpxNwg6khVZzKZuJ4HBCClmM/q9AbXNY3hdtH3X74m/WjyM33t8a/XnXQbriQdSDpUIjGf1ekNRpLulH3/jZc+09u/+mjdybblrdc/fjRyPRMIC0HHSqnG3Ag86t6yGXODqCMlnHLHUqnHXAr+9LuX2oi5xOl3pIWgoxQxf4qoN6etmBtEHakg6ChEzBcR9c21HXODqCMFBB0LiHk5ol6fq5gbRB2xI+h4BjFfjaivz3XMDaKOmBF0PEHMqyPq1fkSc4OoI1YEHZKIeR1EfTXfYm4QdcSIoIOYb4Col/M15gZRR2x4sEziiHkz8ofPXEi6WfT91B4+43vMZ/HwGcSCI/SEEfPm5EfqtzUN1YKUjtRDirnEkTriQdATRcyblweqr4SjHlrMDaKOGBD0BBFze1KOeqgxN4g6QkfQE0PM7Usx6qHH3CDqCBlBTwgxb09KUY8l5gZRR6gIeiKIeftSiHpsMTeIOkJE0BNAzN2JOeqxxtwg6ggNQY8cMXcvxqjHHnODqCMkBD1ixNwfMUU9lZgbRB2hIOiRIub+iSHqqcXcIOoIAUGPEDH3V8hRTzXmBlGH7wh6ZHyPuSR1P/t7vVy+5EUbc2NV1P/lc9I//+Q3rc5TFV/+/FN9/bnPyr4ddcyNVVH/sy/+vr2ZWR9RjxxBj0gIMZekrz3+tX40+VlR1KOPuVEW9W88L/3w6q/05c8/dTJfq7z9q4/0xksLUU8i5kZZ1N958ZG+87e/aH+G1kPUI0bQIxFKzI2CqCcTc2M+6r7H3JiLelIxN+ajHkjMDaIeKV6fGoHQYj7rl9e/ov947bX/+n/+5+m/dT0vrnR6g51//cLkL//T4//xsu8xn/WfX/nmP5x98uK3U4v5rE5vMHrnxUd3Aor5LF69GhmCHriQYz7jgaT+6x8/eux6Rlz44NUbO190rv3ltckXL7uelxqSjsIHr94Yacm71AOQ9O8vNpxyD1gkMZekbUnjD169cd31jLTtg1dv7EgaBxpzKeHTtxHEXEr49xcjgh6oiGJuJBd1E3NJW45nZVPJRSGSmBvJ/f5iRdADFGHMjWSiHlHMjWSiEFnMjWR+fzEj6IGJOOZG9FGPMOZG9FGINOZG9L+/2BH0gCQQcyPaqEcccyPaKEQecyPa318KCHogEoq5EV3UE4i5EV0UEom5Ed3vLxUEPQAJxtyIJuoJxdyIJgqJxdyI5veXEoLuuYRjbgQf9QRjbgQfhURjbgT/+0sNQfcYMX8i2KgnHHMj2CgkHnMj2N9figi6p4j5guCiTsyfCC4KxPwZwf3+UkXQPUTMSwUTdWK+IJgoEPNCwfz+UkbQPUPMV/I+6sS8lPdRIOZLef/7Sx1B9wgxr8zbqBPzlbyNAjGvxNvfHwi6N3yP+V//yb9wPQvzvIu6jzH/3fMv6pfXv+J6NuZ5FwUfY+7hOmd49/vDFEH3gO8x//Crf6p/9/t/pR+/8i3XszLPm6j7GvN3tr6p73deI+pL+Bhzj9c5w5vfH54i6I6FEPMffnpDkvTTT17wcQPjPOo+x/znn0u//UJEvYSvMfd8nTOc//7wLILuUEgxNzzdwDiLuu8xN4j6It9jbni6zhlE3SME3ZEQY254uoFpPeqhxNwg6k+FEnPD03XOIOqeIOgOhBxzw9MNTGtRDy3mBlEPL+aGp+ucQdQ9QNBbFkPMDU83MNajHmrMjZSjHmrMDU/XOYOoO0bQWxRTzA1PNzDWoh56zI0Uox56zA1P1zmDqDtE0FsSQczvl33D0w1M41EPNOZX+T8LUop6oDF/WPYNT9c5g6g7QtBbEEHM703OT/uS3ir7A55uYBqLesAx7+f/JBv1QGN+b3J+2pV0r+wPeLrOGUTdAYJuWSQxzyRpcn46UoJRDznmk/PTi8n56YUSjXrAMc8kKf9foo5KCLpFMcXcSC3qocfcfCHFqIcec4OooyqCbkmMMTdSiXosMTdSinosMTeIOqog6BbEHHMj9qjHFnMjhajHFnODqGMVgt6wFGJuxBr1WGNuxBz1WGNuEHUsQ9AblFLMjdiiHnvMjRijHnvMDaKOMgS9ISnG3Igl6qnE3Igp6qnE3CDqKNKZTCau5yF4Kcd8Vqc3yLTk5/DGS5/p7V99tOnHNO2BplHrKqGYz+r0Bkt3ZF6+Jv1o8jN97fGvN/kYG956/eNHo9RiPqvTG4y05L/d03XOeOv1jx+NXM9ETAj6hoj5swKOelcJxtwIOOr3Jd1yPROzHKxzIxF1iKBvhJgXCzTq3mg75kbAUfeGw3VuJKKePK6h10TMywV6Td0LrmIuBX1N3QuO17lMXFNPHkGvgZivRtTX5zLmBlGvx5N1LhNRTxpBXxMxr46oV+dDzA2ivh7P1rlMRD1ZBH0NxHx9RH01n2JuEPVqPF3nMhH1JBH0ioh5fUS9nI8xN4j6cp6vc5mIenIIegXEfHNEfZHPMTeIerFA1rlMRD0pBH0FYt4cov5UCDE3iPqzAlvnMhH1ZBD0JYh584h6WDE3iPpUoOtcJqKeBIJegpjbk3LUQ4y5kXrUA1/nMhH16BH0AsTcvhSjHnLMjVSjHsk6l4moR42gzyHm7Ukp6jHE3Egt6pGtc5mIerQI+gxi3r4Uoh5TzI1Uoh7pOpeJqEeJoOeIuTsxRz3GmBuxRz3ydS4TUY8OQRcx90GMUY855kasUU9knctE1KOSfNCJuT9iinoKMTdii3pi61wmoh6N5IMu6UIlGyLXUtqwGDFEPaWYG7FEPdF1LlOYUb/SdPuNXPJBf/3jR0s3RK6kuGExQo56ijE3Qo964utcprCifiWpn2+/kUs+6JKfUf/ra3+87NvRbliMVVH/m9+/oN89/2J7M1TR3730T/W/f1/67WhjblSJ+uULS5dtZ1jnlkfdI8S8BEHP+Rb1t3/1kd546bOib0W/YTHKov6N56UfXv2Vvvz5p+3P1Apfe/xr/WjyM728uGZFH3NjWdTfefGRvvO3v2h9nqpgnSuP+hsvfaa3f/VR+zO0iJgvQdBnBBD1ZDYsxnzUfY65URD1ZGJuFEXd55gbrHOLUfcl5v/wpRf+8Is//uobxLxcZzKZuJ4H73z72//mL/7D//1fb/gSjR+/8i399JMXktuwzOr0Btk3ntdd32M+65fXv6J/33nt//3mC91KKeazOr3BjqTxOy8+2vI95rNY56RObzB646XP7vgQ85mxKQ803Tl+7HqefETQ53R6g5GkOx4eCb71+sePRq5nwpUPXr2x849/9Ef//Ut/+MM/cT0v6/j0S8//4sV//Pxbr3/8KNkN0H/7s6//xZ988ps3XM9HDamvc5k8uKW3YKApUS9B0GeYmJv/T9T98MGrN3YkjSVtOZ6Vuh5oet0vuQ3QB6/eGGlmnQpQqutcJj9jbhD1AlxDz83HXJJ+/rn0ztY3fRpNndyDFCKIuSRtSxp/8OqN665npE0RxFxKc53L5HfMpXyd6vQGSa1TqxB0FcfcIOruRBJzI6moRxJzI6V1LpP/MTeI+pzkg54vDDvL/gxRb19kMTeSiHpkMTdSWOcyhRNzoysp6vVpHckHPb8G09f0mkwpot6eSGNuRB31SGNuxLzOZQov5uZ20EurMxWQ5IMuEXWfRB5zI8qoRx5zI8Z1LlO4MU/ydtAyBD1H1N1LJOZGVFFPJOZGTOtcJmIeDYI+g6i7k1jMjSiinljMjRjWuUzEPCoEfQ5Rb1+iMTeCjnqiMTdCXucyEfPoEPQCRL09icfcCDLqicfcCHGdy0TMo0TQSxB1+4j5M4KKOjF/RkjrXCZiHi2CvgRRt8enmP/dy85nwQgi6r7E3KPfmxTGOpeJmEeNoK9A1JvnU8x//Mq39Odf2tYvr3/F9awYXkfdl5j/8vpX9Odf2taPX/mW61mZ5fM6l4mYR4+gV0DUm+NbzH/6yQv67RfS9zuvEfUVfIr59zuv6bdfSD/95AWivgIxTwdBr4iob87HmBtEfTkfY24Q9XLEPC28PnVN+bPfx5pucEvx6tVn+RzzWS9fk340+Zm+9vjXLc9VKaevXs13KM4k3XLx+bOKYj7rjZc+09u/+qjdmVrO9TqXiZgnhaDXQNTXE0rMDaI+lcd8rBXLeRtWxdwg6lPEPE2ccq+B0+/VhRZzidPvUpgxlzj9LhHzlBH0moj6aiHG3Eg56qHG3Eg56sQ8bQR9A0S9XMgxN1KMeugxN1KMOjEHQd8QUV8UQ8yNlKIeS8yNlKJOzCER9EYQ9acCjfnVsm+mEPWAY770d5dC1Ik5DILeEKIedMz7kt5a9odijnrAMb8nqasV61zMUSfmmEXQG5Ry1EOO+eT89GJyfjpSglEPOeaT89Os6joXY9SJOeYR9IalGPXQY26+kFrUQ4+5+T8pRp2YowhBtyClqMcScyOVqMcScyOlqBNzlCHolqQQ9dhibsQe9dhibqQQdWKOZQi6RTFHPdaYG7FGPdaYGzFHnZhjFYJuWYxRjz3mRmxRjz3mRoxRJ+aogqC3IKaopxJzI5aopxJzI6aoE3NUxdvWWhT6W9pSi/msTm+QacVG1de3tOX/PlYiMZ9VdZ3z9S1txBzrIOgtCzjq70o6UIIxNwKOupRgzI1Ob9CVdKEVy66HUb8n6Y7rmSDm4SDoDgQcdedcxdwINOrOuYq50ekNKp1d8jDqThHzsHAN3YGAr6k75TrmUrDX1J1yHXNJypeFvsJ79rszxDw8BN0Ror4eH2JuEPXqfIi5QdSrI+ZhIugOEfVqfIq5QdRX8ynmBlFfjZiHi6A7RtSX8zHmBlEv52PMDaJejpiHjaB7gKgX8znmBlFf5HPMDaK+iJiHj6B7gqg/K4SYG0T9qRBibhD1p4h5HAi6R4j6VEgxN4h6WDE3iDoxjwlB90zqUQ8x5kbKUQ8x5kbKUSfmcSHoHko16iHH3Egx6iHH3Egx6sQ8PgTdU6lFPYaYGylFPYaYGylFnZjHiaB7LJWoxxRzI4WoxxRzI4WoE/N4EXTPxR71GGNuxBz1GGNuxBx1Yh43gh6AWKMec8yNGKMec8yNGKNOzONH0AMRW9RTiLkRU9RTiLkRU9SJeRoIekBiiXpKMTdiiHpKMTdiiDoxTwdBD0zoUU8x5kbIUU8x5kbIUSfmaSHoAQo16inH3Agx6inH3Agx6sQ8PQQ9UKFFnZg/FVLUiflTIUWdmKeJoAcslKgT80UhRJ2YLwoh6sQ8XQQ9cL5HnZiX8znqxLycz1En5mkj6BHwNerEfDUfo07MV/Mx6sQcBD0SvkWdmFfnU9SJeXU+RZ2YQyLoUfEl6sR8fT5EnZivz4eoE3MYBD0yrqNOzOtzGXViXp/LqBNzzCLoEXIVdWK+ORdRJ+abcxF1Yo55BD1SbUedmDenzagT8+a0GXVijiIEPWJtRZ2YN6+NqBPz5rURdWKOMgQ9crajTsztsRl1Ym6PzagTcyxD0BNgK+rE3D4bUSfm9tmIOjHHKgQ9EU1HnZi3p8moE/P2NBl1Yo4qCHpCmoo6MW9fE1En5u1rIurEHFUR9MRsGnVi7s4mUSfm7mwSdWKOdRD0BNWNOjF3r07Uibl7daJOzLGuzmQycT0PcKTTG1yXNJa0vezPfeN56evPfUbMPdLpDTJJd5f9mZevSW8//0g//vwGMfdEpzfY0XSd21r259546TP9ze9fIOZYC0FPXNWoV8SGpUVVor4GYt6SqlGviHUOT3DKPXFVT79XwIalZVVOv1dEzFtU9fR7BaxzeAZBRxNRZ8PiSANRJ+YONBB11jksIOiQtFHU2bA4tkHUiblDG0SddQ6FCDqeqBF1NiyeqBF1Yu6BGlFnnUMpgo5nrBF1NiyeWSPqxNwja0SddQ5LEXQsqBB1NiyeqhB1Yu6hClFnncNKBB2FlkSdDYvnlkSdmHtsSdRZ51AJQUepgqizYQlEQdSJeQAKos46h8p4sAxWyh8+cybpgA1LWPKHz/SJeVjyh8+cSbrNOoeqCDoAABHglDsAABEg6AAARICgAwAQAYIOAEAECDoAABEg6AAARICgAwAQAYIOAEAECDoAABEg6AAARICgAwAQAYIOAEAECDoAABEg6AAARICgAwAQAYIOAEAECDoAABEg6AAARICgAwAQAYIOAEAECDoAABEg6AAARICgAwAQAYIOAEAECDoAABEg6AAARICgAwAQAYIOAEAECDoAABEg6AAARICgAwAQAYIOAEAECDoAABEg6AAARICgAwAQAYIOAEAECDoAABEg6AAARICgAwAQgefq/KVOb3Bd0lnD8yJJ48n56dDCdNfS6Q12JB1amPTF5Pz0oOmJdnqDcdPTlKTJ+Wl/3b9j8Wc3mpyfjixMt7JOb3AoacflPBS4zP+RpLGky8n56WXJn7XOp2UxJBa3qbNuT85PH1v+jLWEtq1tiqX15KJW0DXdqN1qck7MdDu9waEHC92B7Pz3dfNpN83GvNZ1XXbmZ2xhmuuytdxvYnZ+fiBJnd5Aku5r+jMbT85Px47mB9XZ2ubMui1pZPkz1mVre3Gr0xvI46hb+V3XPeXeb3ImZmxputA50+kNupLuWJr8TUvTBebd0jTwH3Z6g8ed3mDU6Q2crltYKmvhM3yNmy37nd4gcz0Tbaob9G6TMzHH9UKX2Zx4fooJaNOWpjupP+n0Bped3mCYn+KFB/IdrTZ29rcT3P7cTem/uW7Qbf6Atju9Qd/i9FexvUPRtTx9YJmbmh65E3Z/ZC1+lusDJhfGqUS9btC3G52LRZnl6RfKT89sWf6YJBYseG9L07BfON6BTlp+ie/NFj/yToI7cVuSRin8d68d9Jb2dFwtdG3svRJ0+OSmptfZbYw0xmoujpgzB5/p2rbs30XgXJ0j9LaClLX0OZKk/CjF9pkHiVPu8NN+pze4SOEoxjOZg89M8bS7NB35PnI9EzbVCXq36Zko0fZCl7X0OW3sNAB1bGt6vZGot6ClS3xFbiZ8meVOzCPf6wS93/RMlGhtobN8q1rR53HaHb7alh/3/KfA5ZFy5vCzXbsb6w6Nz6fcpfYW+LZXrG7LnwesY5tr6nblO/Uuz9alODhu1lmMB1ZrBT1fANo8RfRmfvRsTf7flNn8jALRLUiIzn6sRzGe8OE6duZ6Bhza0jTqUe3UrHuE7iJEmeXp31b717EIOkIwcj0DMcoj0tolviV82Klw6aYiu7y0btD7NmZihczy9IeWp1+k6+AzgXXdjHkAkUOZ6xnI3eRxwNqOaeT7ukHv2piJFaxtVPJTii6er85Id4Qi9aM4G3z6mWauZ8ADdzq9gU+/k9pCOOUu2VvonP0SbY8NABqS4vO/rWnxue1VWR+nFIj3Yjgbte7rU10dWd7q9AbdJt/z7OCRi/O6evoea6TtnhaXha6ePSPm8rWkmfw6qgxZ5noGCmRyc+nRN4ed3uBicn564XpG6qocdA9GvB6o2Y3KsMFp1dFXZAMyUNuo6jvL8/VwJ/+nr3aO9votfEb0PDiIKJPJ/fbQB1uaPlipOzk/fex6ZupY55R719ZMVJQ1NaF8lKnrwSBdx5+PAE3OT8eT89PDyflpNjk/7Ur6jqSHlj92O7bbexzJXM9ACQbHPWWiHuTyvk7QXV9H22rwGkcmN49cnNV1/PmIQH5kvyPpgeWPcr3+x8DnyxaZ6xnwyLakIB+sFFLQpeZWCB9WLJfXRBGR/PSg7WXah/U/WA6f214Vg+OedafTGwxdz8S6Qgv6xiNufRplygqEpuRH6vctfkSQpyA9krmegQp8ONDxyQ9CG/leKeh5eHzZu9x0ofNpoe26ngFExeb7nn3YoQ9SfhASwhm5zPUMeOhuSLdtVj1C79qciTXdrjtgwcMVq+96BhAVm7fbcIRen08HEcs0OU4pJuNQzqZWDXrf5kysaUv1R6j7tmJ1Xc8A4lH11je0x+IdNbYGQWaWphuyYF7kUjXovp1yGK77Fzx6IcKsrusZAGBVJjuXKw8lvW9hurdCORpt2bYCeFlRiKfcpel9k/01/45vR+eSX6f/ATTP1nbnTPbGTPi4rfTBm53ewOvb2aoG3ceXiWSW/3wrQjiNA2B9Fl/+9P7k/PTx5Px0JOnKwvQzC9OMxb7P4wxWBt2DR76WuVM1hvkvwItb1Qr4djkDgWLn0Du2jnRHM/9u4yidwXHL3fW1i1WO0Lu2Z2IDVVeYzOZMbIigoyk2l6VLi9OOjsXntl9Nzk9nI85pdzfOfLydrUrQvZvpGdmqP5DvSfl8rbrregYQDZvP4760OO0YZZam+0zA87jbeJZ/6K/Ntf0o5C1JI9/OioUe9CovFcjamJEN+PzzRSDyDUtm8SOCfPuUQ5ml6RYNyuIofdGZpCPLn7Etuw9zWlvoQZeWrDj5aS/fblWb5/vPF2E4lN2nOQb7jui2WRyz87DkXd0jC58lbfAQLx9Mzk8PZOfWvlm3Or3ByPJnVLY06JYe+dr06aFlLxXIGv4sqfnnZW+FvNLArU5vcD3foFjdceWhNWvJLE13VPTFPPI2TjFv8hAvX2Syf/r9ji+DCFcdods4ejxQ81HPlnxWk+5LGjc8TYmjdKyh0xvsdHqDLA/5peyfhbK9QYxGfnBha8zOqOb3NhHyaXfzJsK+7NzeN+uuD++Uf27F922E5lLThe8HDU7zQHNPj7P0usKh7Axi25GdHQWEIVtxG0w3/+e63DwTYuzgM0M1tDTdB5Pz08sl3z+T9J6Fz93u9Ab9kM/QTM5PH+fr11h2L0uN8p+Vs8tTrR+h5/+xTT9tp+i+yab3LB/mC/Vlw9OVGOmeujua7uCW/XNH06M+Vw94Gjn63KBYfG67tGKbmcfe1utzM0vTbU3eHdtnG5w/873toD+QnpwGudfwtDPzL/neWNMbv2H+vzb2vjjlDl+VDcTCotuydwRYZTT1yNJnV36Il8/yJ+u9a/ljbsrhGa1VQW96pObsrS/Dhqc9+1IBG0fnI+nJzkjTuhamCTRh5HoGAjK0NN33K253bN5ClVmcdmsm56dDNX8wOW/b1cj30qBberTd2PyLpVNEB5ae0DSa+/9Nz7evj6VF2q7U/OWxKFl8brtUcafK0plPI+jBcXMO1M7I99Z/ZsuO0G0NiJvV9MYiU/N7ya1s1Hx9NjCSdmjpjFSMMkvTnX/U6yq2jtLrvOHSSy2OfH+v7dvZlgW9a+HzLmf/j4XHFm6p+Vt4zgo2auOGP0PitDv88jA/PYkV8uvLtm4dXCvQ+TbVVqgyS9NtXYtRP2zzEbptH6EXDa7x/ZTesOBrXEdH7JzfUxsQm6dW62wfbR2lRzE4zsgHe2aWP2ZL0ritn9uyoDf9cISrktN3I9nfS6rrXsm9nzZG/fYtTBOo4y1Gtq8lszTduncY2DxIiulaujmj8T3LH9Na1AuDvuRRqpsoXDDzyHv1gPsZo5KvX1r4rK6FaQLresvc0YHV8qeDOR0MNy/fCbDxBjYpotPuxlQv/pIAABGSSURBVOT89FAtjHxXC2ejy47Q2zrdbgwtfN6m7pc9HWnFE5vqYqQ7XCPm67N5xDpy9HeXqfKGy+BMzk8ztTPy3WrU2wx66XVny085qmu04vuN7wHHMooUwXkoqUfM12P5ue2rHvW6yqih+SiSWZy2S33ZO7Nh7Nsc+d5m0Mcrvu/T4LiHFTZulxY+t2thmsAyR5J2uGZei2+D4Z7IdwZsHXEue8NlsPLLv7fVwotcbE247OUsbdyD/ozJ+elZpzd4KD9OPQ8r/JkLNb933m14ekCZe5KGli4fRS8f4JRZ/IidTm8w3HAaNp8hkMnPS6UbmZyfXuRH0D9xPS91LAQ9X1Abj2rFDceh7LwxaB1XqjZIz8bK0rcwTcB4qOmyfUjIN2bzue2StG9x2k3IFGHQpScHl2/J4pG0LUWn3G0cnVc99TOS+1vYqj4da2zhs6O5xxPeeKDpafXe5Py0Ozk/PSDmjYjq9q0aohwcZ+SXXG2PfG9c0Sn31k+3G/l7a89k76lLVYwcfrar12MibA/09IzROP/3i5DfYe0zS29zDNGB/L3leGOT89PM8sDHxrUV9HUG3AzlLuhlD5JZMDk/HXd6g8ZnoNMbMEApPd8hvkHJXM+AJ251eoNu5Gd8bmu6kxzEDlzRKfeuhc+pHCjHt7AN1/zzNi4PdC1ME0ADLD+3PURRX3rIL79mcn8puJKioNs4vbDuADIXt7Ddr7GnaeNIurUH+QNYW+Z6BjyTuZ4B2/IzpkGMF3gm6LbeCrPu6UQLb2GrYljj71w2PA8SQQd8FvURaQ1bbb8i1IW8YW+5no9V5o/QuxY+o26Y2zxKf1jzGuZlw/Mhccod8JLl57aHLHM9A20IYeT7fNCdjXAvMFJ71y2GNf+ejVPuQQy+ABKUuZ4BT92K8clxRfJnvr/vej7KzAe9b+EzxnX+UotvYavymNcyVp7EZOvSB4B68mC96Xo+PJbSpYhM9l/kUksbp9w3id6wqZlYYrTB37V1e1nX0nQB1JNSsOrI2njftw9afOb72p7ch27rka/aIHqT89PLTm9wX/Zu7L/SBtfq8wfhNDg7T+wo4gc21JS19Da6EW8d80+nNxi38DEXk/PTsnBnLXx+yLY0jdzI8Xy0Im9TX9K563mZNftgGVuneTc9ih1K+rCB+ShyVvExr8vY2OHglPuim2pnQNK4hc/A+pw9rSsfxW3zue2xOFAiQZeevMjFq2e+z55yt3XL2kbBzEef27qFbdjANGxcR0/i1BUQCE63V7Od2vif/Gzekev5MGwHvaknvg0bms6syo95XcHGdfRgnh0MxCwPFHeeVJfczk9+mcaLke+zp9y7FqZ/2dB0zjS91t3kaa9RQ9OxNdI99mckAyGwGagHk/PT1o9o8/vpbb3v+3anN7jewKXM0GTy4Jnvs0foNo4KL5uYSL5wjJqYVu5+gy/DYKQ7EKEWntvu4hHXtp/EaQbHJSVvVF+OR75fk6ze9zxucFpNLvyjBqd12eC0ZvUtTRdANZnFaV85vpvC5mcnd9pd8iPq5gjdVtAbO+2Sn35u4jrFJg+SWWDxtHjX0nQBVGMzTE6OzmeMLE57u6VbTL2Tv8jF2Q6NCXrXxsQtvNe7iZVg2MA05tl4alDXwjQBVJAHyeZtkiOL016pwQOkMpnFaXstP2B818Vnm6D3LUy78cg1cAvblew8sMXGABBGugPu2DzKauoOm02NLE77TipPjisyOT8dysGLXGyecrc1ynG4wd89tDT60srAuFReeAD4pIXnto8sTruyFl5TnVmcdggO1PIz36/le1E2noI0tjBNaXqEXXfQwajB+Zhla+ela2m6AMplFqf9oME7bJowsjjtJAfHGS4GyV2TvQFxlzYmusEtbDZPc40tTbdvaboAysU8GG7eyOK0b6Y6OM5oO+rXZC8al5amK9VbKYZNz8QMjtCBCFh+brvrW9UWMDjOvjZHvl+TvRHuYxvTzad9qfUWwvs2B6FYGM1vdC1NF0CxzOK0fTs6N0YWp5304Dgj35H7nu3PsXXKvY3TC+usHENbMzHDxn9zUi86ABzbkd27S0YWp11bC4Pjkr6WbkzOTw9leeT7Ndl59qytI9Yn1riF7WFLg1Bs/DdvsXcLtMbmK1J9uVWtzMjitDOL0w7K5Pw0k8WR78/Jzg3w1oOey7R6DMDY+lxMjSx91nWtvkbv5CEGJS7l1/ysa7zke6MV36/r0sI0XQn5d2+TjedfNGlkc+JLXjZ1KTvLzNjCNJvSl52zFpedyWRiYboAAKBN11b/EQAA4DuCDgBABAg6AAARIOgAAESAoAMAEAGCDgBABAg6AAARIOgAAESAoAMAEAGCDgBABAg6AAARIOgAAESAoAMAEAGCDgBABAg6AAARIOgAAESAoAMAEAGCDgBABAg6AAARIOgAAESAoAMAEAGCDgBABAg6AAARIOgAAESAoAMAEAGCDgBABAg6AAAReM71DDRld/84k3RxcrR34XpefLW7f7wj6br5/ydHe2N3c5OO/Oculs307O4fdyV1WddQ1e7+cXZytDeq83efBH13/7gvqb/hvFzWnZEGdCUd7u4f95vecOY7C93Zr50c7Q2b/Iym7e4fX5d0W9PfaV/SzYI/I0lXksaSzhz+7paKYNm8LukslWWzaJ4kjU6O9i5rTm9Y8OXa02vZUNOfRd/pXFRU8rMucqHpOuXdTmrTy1+b8nk/3N0/Pjs52nu87t+fPULvS/rBhvNzX9Jow2lsYkvS2MKGM5N0a+5rwwan35g85Ieaxnyrwl/ZkvSmpDd3948PJR26DkKBvlg2y2Tyb9nMtDhPY0mXNadX9LvfZHqtyI/O7+T/3g/kKH2t9Wx3//ihpuvVYZ0AWZKp2eWvTUNNtxUHqrEex3gN3Ww4d1zPSNt2948PNF1o76hazOdtSfrB7v7xRYo/vxYku2wm6mDm3zNXM2HZTU13Asb5wQRqyo/OzZnUrM40Ygy6lNiGc3f/+Pru/vGZpPdUL+TztpXQz69lZtnMXM8I7Mnjls186U5+xB6rbU2PglFfNvPvN+tsI2INupRI1PMNx1jT0+bLPNT0tPO7+T/3JD1Y8ueT+Pk5siXpLlGP2oEWd66HDuajTdtrXIPHjHyc0MaXzlaNcr9/crTXX3eiHjFROvB1wFcDzjTdOy5ypen19NIBIfkOwYGKN0Bbml6L927gi8JfNqVp1BXxspmkmXVq3p3d/eNhCIOzZp0c7XXMv+c7+Dsqvk4t1bz2i8Kf2c3d/ePbJ0d7Z1UnEvMRuhHt0VC+N1y0UknS+5reLrN0A3JytPc4HwTX1fQI3riS9F0PB8jFJsplM3HLBqRmLc5H406O9i5OjvZG+c70+wV/ZCs/2kRF+aWYsu140Y5hqRSCbkS14cwXgrIRqfdOjvZurzPqNA97X09Pxe+ss2eIjUS1bGLpEepBRIPHymLDZbr1DJd879Y6O0gpBV2Ka8M5LPn6vZOjvazuRE+O9rKTo72d0E4LRiCmZTNZcyOVi5hbkoKXbyMeFnwrlh0W62ZvbVxiWHV6qQVdimDDuWQheKhINhaJupvfeohwDQu+Nj/4NLM/G625dD0DgRsWfG1+eblV9Q6J2IN+v+TroUf9dsnXhx493AHLFR3ZSNJ7u/vHozZnBM3IT43OH53f13Tg6qxatyR5itPrNc08zXNe0U79sMo0o3mWe4mhpj+colu67u7uH18/Odo7bHeWGlG0EDxktHRQRpoORCw603InH/2etTlDlu3kjxqO2bDgayNNbyudH+8ylNsnF24s34EpGvw3bndOglV0Z9G9k6O9cf4Evtmdw0p3SKwK+s7u/vF4jRm8ODna8+2UYabpAlZ0a9d7u/vHOwFuOIv2ilMbwBb8snlytJfle+lFO5yxRf091zNgU8l9xFeaviPh8e7+8f2579/c5CUcruX/vWXbHB9vc/XKklsbRzP/W7QTmC2b7qqgb6l8OH0Q8pWpr/KoB7XhzBeEor3i1Fai4JfNXKZIls3EFW6cZy6BjbS4vGYK4Ch95mEx1zU9mOiqfODfPS77VZJpcTv+YOZ5/yMtBv12fla59Ocb+zV0SdOoa/qCj7Ino90J6Lpl2TWryzZnAs2YWTbvlfyRkJbNJOUDlorOsjy5nJcfic+Pm1jrliSHfpD/s6/pTklZzK/EoNyqin5Os8vLpRa3CSvvkIj9GvoTM0fqZyo+skvuaGjNU9aSdODj6xJDl0c9y68xp3JNPSbDgq/dK7jeOZR0t+Br/aZnyIGHktZ69kWqSm5tLBoDNdTi9uBgd/+49M12q4J+pfVO5Xq9sTdHQ/kRDxvO9U9Z+3R/aVTLpvTkmrpUvmx2Fe5G83uq/zv4sMkZadKSW0hHBV870/QobPZU6618HI/3y2cJH1+f6rthwddG8184Odq7LBh7saXp6frCwdyrgn4RwfOyF1TYcKYU9VCluGze0tN3qoe28byo+z5wz0fHF50CvV/035qfJTzU4rXRA/l7b7q5TDB/RHklqR/wjogTu/vHt1X8syy722qoxR3ag7I/n8Q19CJ5sIO7brlko8j9oJFYsWyaV9v6dLYkSQWvSDWW3Qo7Kviaz69WvVTxbbLRPPGuZasGTz4j397Pj70ofY5BMtfQiwR8pD5/j6I0vQ637j31ZQ/ekaY7CE28Wx01rFg2zbun2Ylzq+g+Ykn6SY2zCkN5epR+crR3sbt//D0t3np4Z3f/eBzqrXdtK7m1UZL2d/eP99ec3FAFO4fJHqEbFY7UfXzwTNFprv66R20nR3v9sn9KPgMtypfN75V8e9vXs0gJafII9Y7PZ13yB3AVvV3tMH+lKlZrcnm5WXSHRPJBl1ZGfV/+HQkVPdCh6VNgC//Nda+Bor58Q/pWybfvKI578YOTn/Js+gyW76ewMy2e/t2SdObzzogPltzauInh/BcIei6PetmG07dTz2eaDqSYd9DEtbh8j3vhoQebThf15Kc0y5ZNuDG0ME2vX61qbq8s+NZNBfCAHMeGFqa58BwDgj4jlA1nvmKVHaU3sbc8LPjaeMNpYgOhLJspWPKK1O9K+s4a/8zvlJtbkryVn6V7t+Bbb/KmwGJLbm18V+stL0Vjnp75mSc9KK7IydHeKB/QMv8ACN8caDr6dP5I2oyCrnVrU76xKjo1NFp3WmhWQMtm7IrCde/kaG+t9yksuYXNx3E7T5wc7Q1LBni9lw+SY/zNs4qWl4cnR3vDdSaSP4J3/ha2N3f3j7vmIUYcoRcI4Wgoj/Ww5Nvbki7WfaxkvsAUxeI+K6kfQlg2Y5avU0XP3a8T4aK/E8qrVW+r+LIf19Nn1Ly1sVDJLWzSTAdWHaF3Zx7MX8VlLLcwhHA0dHK0Z0aYFp3OuSnpw/xJQ4eSxkVH7ObpY5ruRZY9o9nHU2mpL5uPNT1r4tv4jtgNC75Wa4c3f9DMPS2uv0N5fkYsn/fbWjxiNNfTi+5dT1HRrY1Xqv/7HWqxSU9erboq6De1eEpomfvyfEFcRyBRz/KoFx01SNPTYrckKX/H7uXc91Z5y9Oj89SXzbOZtwgS9RYsuY94uMFkD7UY9Ju7+8e31z2F37b8vd3vanE9fHN3//ggv0MjWUtekVr7Mbl5k+YfH6z8cw445b5CflRXNIDFGydHezsqv+1u1k09DXzVmI82mDVYlO9o9eXxshmZrOBrDze5nTP/Ha4c7OSr/Dpw0fy/x/3phWOcpM0PLIp2lLLd/ePrBL2CfIXty+MNZ37b3XfVzDxeSfouMfcfUW/HkpHKwwYmX7SBDuXVqhLX08sMC75W9Ba+dRUtL1viCL26EDac+Sm6rqZPFysaPLHKQ01vpej6froPT4WwbEZgWPC1qyZ2evN1rWh9DeUo/bGKr5nfVPHttdFbcmvjxpch8p930RnZg85kMtl0+knJTyONT472vN/zzOe1r+lT37qavv7UXGs3rx99nP/vmCfBhS2kZRNA8wh6DbP3/QE+YdkE0vX/ARJ/NT/ruaTOAAAAAElFTkSuQmCC" alt="Milplan"></div>
+      <div class="brand-text">
+        <h1>Planejamento Estratégico de Qualidade</h1>
+        <div class="sub">Milplan Engenharia · Qualidade · Acompanhamento trimestral</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div id="saveStatus" class="save-status" style="display:none;"></div>
+      <div id="modePill" class="mode-pill">Carregando…</div>
+      <button id="helpBtn" title="Como usar este painel" style="width:30px;height:30px;border-radius:50%;border:1.5px solid rgba(255,255,255,.5);background:rgba(255,255,255,.1);color:#fff;font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">i</button>
+    </div>
+  </div>
+
+  <div id="helpOverlay" style="display:none;position:fixed;inset:0;background:rgba(10,18,36,.55);z-index:999;align-items:center;justify-content:center;padding:20px;">
+    <div style="background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px 28px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.35);">
+      <button id="helpCloseBtn" style="position:absolute;top:16px;right:16px;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--border);background:#fff;color:var(--text-muted);font-size:16px;cursor:pointer;">✕</button>
+      <div id="helpContent"></div>
+    </div>
+  </div>
+
+  <div id="landingOverlay" style="display:none;position:fixed;inset:0;background:rgba(10,18,36,.75);z-index:1000;align-items:center;justify-content:center;padding:20px;">
+    <div style="background:#fff;border-radius:14px;max-width:380px;width:100%;padding:30px 26px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4);">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;color:var(--navy-800);margin-bottom:2px;">Planejamento Estratégico de Qualidade</div>
+      <div style="font-size:12.5px;color:var(--text-muted);margin-bottom:22px;">Como você quer acessar?</div>
+
+      <button id="landingGestorBtn" class="linkbtn" style="width:100%;justify-content:center;background:var(--navy-800);color:#fff;border-color:var(--navy-800);margin-bottom:10px;padding:12px;">🔧 Sou da Sede (gestor)</button>
+      <button id="landingObraBtn" class="linkbtn" style="width:100%;justify-content:center;border-color:var(--border);color:var(--navy-800);padding:12px;">🏗️ Sou de uma obra</button>
+
+      <div id="landingObraPicker" style="display:none;margin-top:16px;text-align:left;">
+        <label style="font-size:11px;color:var(--text-muted);text-transform:uppercase;font-weight:700;letter-spacing:.03em;">Selecione sua obra</label>
+        <select id="landingObraSelect" style="width:100%;padding:9px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;margin:6px 0 10px;"></select>
+        <button id="landingObraGoBtn" class="linkbtn" style="width:100%;justify-content:center;background:var(--navy-800);color:#fff;border-color:var(--navy-800);">Ver painel da obra</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="authOverlay" style="display:none;position:fixed;inset:0;background:rgba(10,18,36,.75);z-index:1000;align-items:center;justify-content:center;padding:20px;">
+    <div style="background:#fff;border-radius:14px;max-width:360px;width:100%;padding:28px 26px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4);">
+      <div style="font-size:26px;margin-bottom:8px;">🔒</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:19px;color:var(--navy-800);margin-bottom:4px;">Área do gestor</div>
+      <div style="font-size:12.5px;color:var(--text-muted);margin-bottom:16px;">Digite a senha para editar o painel</div>
+      <input type="password" id="authInput" placeholder="Senha" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;text-align:center;margin-bottom:8px;">
+      <div id="authError" style="color:#c0392b;font-size:12px;min-height:16px;margin-bottom:8px;"></div>
+      <button id="authSubmitBtn" class="linkbtn" style="width:100%;justify-content:center;background:var(--navy-800);color:#fff;border-color:var(--navy-800);">Entrar</button>
+      <button id="authBackBtn" style="margin-top:10px;background:none;border:none;color:var(--text-muted);font-size:12px;cursor:pointer;text-decoration:underline;">← Voltar</button>
+    </div>
+  </div>
+
+  <div class="controls" id="controlsBar"></div>
+
+  <div id="storageWarning" class="gestor-banner" style="display:none;background:#fdeceb;border-color:#f0b8b0;color:#7a1f1f;">
+    <span>⚠️</span>
+    <span id="storageWarningText"></span>
+  </div>
+
+  <div id="content"></div>
+
+  <div class="footer-note">
+    Painel QSMS · Qualidade — dados salvos automaticamente neste link. T2, T3 e T4 valem 33,33% cada; trimestre fora da vigência da obra pontua automaticamente para não penalizá-la.<br>
+    <span id="lastUpdatedNote"></span>
+    <span id="backupLinksWrap" style="display:none;">
+       · <a href="#" id="exportBtn" class="footer-link">exportar backup</a>
+       · <a href="#" id="importBtn" class="footer-link">importar backup</a>
+    </span>
+    <input type="file" id="importFile" accept="application/json" style="display:none;">
+  </div>
+</div>
+
+<script>
+// dados padrão (cronograma QSMS 2026 - Qualidade), usados só pelo botão "Importar"
+const ACOES_PADRAO = [
+  {trimestre:'2', nome:'Acompanhamento do Índice de desempenho dos soldadores', recorrencia:1},
+  {trimestre:'2', nome:'Caminhada da Qualidade em Campo (líder)', recorrencia:2},
+  {trimestre:'2', nome:'Controle de documentos de todos os setores pelo Qualidoc', recorrencia:1},
+  {trimestre:'2', nome:'Emissão do organograma Qualidade', recorrencia:1},
+  {trimestre:'2', nome:'Gestão de controle de recebimento de consumíveis', recorrencia:1},
+  {trimestre:'2', nome:'Gestão de não conformidades sem definição de tratativa com mais de 30 dias', recorrencia:1},
+  {trimestre:'2', nome:'Gestão de quantidade de retrabalho em solda', recorrencia:1},
+  {trimestre:'2', nome:'Gestão do uso dos softwares da qualidade (Controltub / Controlstru / Qualidoc / Protheus - calibração)', recorrencia:1},
+  {trimestre:'2', nome:'Inserção dos documentos no Fluig', recorrencia:1},
+  {trimestre:'2', nome:'Participação na reunião mensal', recorrencia:3},
+  {trimestre:'2', nome:'Gestão de avaliação de satisfação do cliente', recorrencia:1},
+  {trimestre:'2', nome:'SOGI: acompanhamento de requisitos legais da Qualidade', recorrencia:1},
+
+  {trimestre:'3', nome:'Acompanhamento do Índice de desempenho dos soldadores', recorrencia:1},
+  {trimestre:'3', nome:'Caminhada da Qualidade em Campo (líder)', recorrencia:1},
+  {trimestre:'3', nome:'Controle de documentos de todos os setores pelo Qualidoc', recorrencia:1},
+  {trimestre:'3', nome:'Emissão do organograma Qualidade', recorrencia:1},
+  {trimestre:'3', nome:'Gestão de controle de recebimento de consumíveis', recorrencia:1},
+  {trimestre:'3', nome:'Gestão de não conformidades sem definição de tratativa com mais de 30 dias', recorrencia:1},
+  {trimestre:'3', nome:'Gestão de quantidade de retrabalho em solda', recorrencia:1},
+  {trimestre:'3', nome:'Gestão do uso dos softwares da qualidade (Controltub / Controlstru / Qualidoc / Protheus - calibração)', recorrencia:1},
+  {trimestre:'3', nome:'Inserção dos documentos no Fluig', recorrencia:1},
+  {trimestre:'3', nome:'Participação na reunião mensal', recorrencia:3},
+  {trimestre:'3', nome:'Gestão de avaliação de satisfação do cliente', recorrencia:1},
+  {trimestre:'3', nome:'SOGI: acompanhamento de requisitos legais da Qualidade', recorrencia:1},
+
+  {trimestre:'4', nome:'Ação de Semana da Qualidade', recorrencia:1},
+  {trimestre:'4', nome:'Acompanhamento do Índice de desempenho dos soldadores', recorrencia:1},
+  {trimestre:'4', nome:'Caminhada da Qualidade em Campo (líder)', recorrencia:2},
+  {trimestre:'4', nome:'Controle de documentos de todos os setores pelo Qualidoc', recorrencia:1},
+  {trimestre:'4', nome:'Emissão do organograma Qualidade', recorrencia:1},
+  {trimestre:'4', nome:'Gestão de avaliação de satisfação do cliente', recorrencia:1},
+  {trimestre:'4', nome:'Gestão de controle de recebimento de consumíveis', recorrencia:1},
+  {trimestre:'4', nome:'Gestão de não conformidades sem definição de tratativa com mais de 30 dias', recorrencia:1},
+  {trimestre:'4', nome:'Gestão de quantidade de retrabalho em solda', recorrencia:1},
+  {trimestre:'4', nome:'Gestão do uso dos softwares da qualidade (Controltub / Controlstru / Qualidoc / Protheus - calibração)', recorrencia:1},
+  {trimestre:'4', nome:'Inserção dos documentos no Fluig', recorrencia:1},
+  {trimestre:'4', nome:'Participação na reunião mensal', recorrencia:3},
+  {trimestre:'4', nome:'SOGI: acompanhamento de requisitos legais da Qualidade', recorrencia:1}
+];
+
+const OBRAS_PADRAO = [
+  {codigo:'446', nome:'M.446', inicio:1, fim:2},
+  {codigo:'447', nome:'M.447', inicio:1, fim:4},
+  {codigo:'448', nome:'M.448', inicio:1, fim:4},
+  {codigo:'449', nome:'M.449', inicio:1, fim:4},
+  {codigo:'450', nome:'M.450', inicio:2, fim:4},
+  {codigo:'451', nome:'M.451', inicio:3, fim:4},
+  {codigo:'452', nome:'M.452', inicio:3, fim:4},
+  {codigo:'453', nome:'M.453', inicio:3, fim:4},
+  {codigo:'454', nome:'M.454', inicio:3, fim:4}
+];
+</script>
+<script>
+(function(){
+
+// TRIMS ativos: só T2, T3 e T4 têm ações previstas de Qualidade este ano.
+// Cada um vale 100/3 (≈33,33%) — não 25%, já que T1 não entra na conta.
+const TRIMS = ['2','3','4'];
+const TRIM_VALUE = 100/3;
+
+// Cole aqui a URL do seu Web App do Google Apps Script (termina em /exec) para
+// passar a salvar na sua planilha do Google em vez do armazenamento do Claude.
+// Deixe em branco ('') para continuar usando o armazenamento do Claude normalmente.
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx4osyqfSL9JC6xdPmYjx-6QlUh9uc5qVlhn5Txm0JcTbm5gqcn3mXSR0DOPVT87AjsYg/exec';
+
+// Senha do modo gestor — troque este valor E o mesmo valor em SECRET dentro do Code.gs
+// (os dois precisam ser idênticos). O link da obra (?obra=...) nunca pede essa senha.
+const GESTOR_SECRET = 'milplan2026';
+
+function uid(){ return Math.random().toString(36).slice(2,9); }
+
+// ---------- estado persistido: obras, ações e avanço, tudo numa chave só ----------
+let STATE = {obras:[], acoes:[], occ:{}, obs:{}};
+let loaded = false;
+let storageAvailable = true;
+
+async function loadState(){
+  if(APPS_SCRIPT_URL){
+    try{
+      const res = await fetch(APPS_SCRIPT_URL);
+      if(!res.ok) throw new Error('resposta '+res.status);
+      const data = await res.json();
+      STATE = {obras: data.obras||[], acoes: data.acoes||[], occ: data.occ||{}, obs: data.obs||{}};
+      storageAvailable = true;
+    }catch(e){
+      STATE = {obras:[], acoes:[], occ:{}, obs:{}};
+      storageAvailable = false;
+    }
+    loaded = true;
+    return;
+  }
+  try{
+    if(!window.storage) throw new Error('window.storage indisponível');
+    const res = await window.storage.get('qsms_qualidade_v2', true);
+    STATE = res && res.value ? JSON.parse(res.value) : {obras:[], acoes:[], occ:{}, obs:{}};
+  }catch(e){
+    STATE = {obras:[], acoes:[], occ:{}, obs:{}};
+    storageAvailable = false;
+  }
+  if(!STATE.obras) STATE.obras = [];
+  if(!STATE.acoes) STATE.acoes = [];
+  if(!STATE.occ) STATE.occ = {};
+  if(!STATE.obs) STATE.obs = {};
+  // primeira vez que este painel roda (nada cadastrado ainda): já entra com o cronograma QSMS 2026
+  if(!lockedObra && STATE.obras.length===0 && STATE.acoes.length===0){
+    STATE.obras = OBRAS_PADRAO.map(o=>Object.assign({}, o));
+    STATE.acoes = ACOES_PADRAO.map(a=>Object.assign({id:uid()}, a));
+    scheduleSave();
+  }
+  loaded = true;
+}
+
+let saveTimer = null;
+function scheduleSave(){
+  clearTimeout(saveTimer);
+  setSaveStatus('pending');
+  saveTimer = setTimeout(()=>doSave(1), 500);
+}
+function salvarAgora(){
+  clearTimeout(saveTimer);
+  doSave(1);
+}
+async function doSave(attempt){
+  setSaveStatus('saving');
+  STATE.lastSavedAt = new Date().toISOString();
+  if(APPS_SCRIPT_URL){
+    try{
+      const res = await fetch(APPS_SCRIPT_URL, {method:'POST', body: JSON.stringify({secret: GESTOR_SECRET, state: STATE})});
+      let result = null;
+      try{ result = await res.json(); }catch(e){}
+      if(result && result.ok===false){
+        setSaveStatus('error');
+        storageAvailable = false;
+        alert('A planilha recusou o salvamento: '+(result.error||'senha incorreta')+'. Confira se a senha no painel bate com a do Apps Script.');
+        return;
+      }
+      setSaveStatus('saved');
+      storageAvailable = true;
+      renderLastUpdated();
+    }catch(e){
+      if(attempt < 4){
+        setTimeout(()=>doSave(attempt+1), 700*attempt);
+      } else {
+        setSaveStatus('error');
+        storageAvailable = false;
+        render();
+      }
+    }
+    return;
+  }
+  try{
+    if(!window.storage) throw new Error('window.storage indisponível');
+    await window.storage.set('qsms_qualidade_v2', JSON.stringify(STATE), true);
+    setSaveStatus('saved');
+    storageAvailable = true;
+    renderLastUpdated();
+  }catch(e){
+    if(attempt < 4 && window.storage){
+      setTimeout(()=>doSave(attempt+1), 700*attempt);
+    } else {
+      setSaveStatus('error');
+      storageAvailable = false;
+      render();
+    }
+  }
+}
+function setSaveStatus(s){
+  const el = document.getElementById('saveStatus');
+  if(!el) return;
+  if(activeLock()){ el.style.display='none'; return; }
+  el.style.display='flex';
+  const map = {
+    pending:'● Alterações não salvas',
+    saving:'Salvando…',
+    saved:'✓ Salvo',
+    error:'⚠ Falha ao salvar — tentando de novo'
+  };
+  el.textContent = map[s] || '';
+  el.className = 'save-status '+s;
+}
+function renderLastUpdated(){
+  const el = document.getElementById('lastUpdatedNote');
+  if(!el) return;
+  if(!STATE.lastSavedAt){ el.textContent = ''; return; }
+  const d = new Date(STATE.lastSavedAt);
+  const fmt = d.toLocaleDateString('pt-BR')+' às '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  el.textContent = 'Última atualização: '+fmt;
+}
+
+// ---------- obras / ações / vigência (agora editáveis, não fixas no código) ----------
+function obrasList(){
+  return STATE.obras.slice().sort((a,b)=>String(a.codigo).localeCompare(String(b.codigo), undefined, {numeric:true}));
+}
+function findObra(codigo){ return STATE.obras.find(o=>o.codigo===codigo); }
+function isVigente(codigo, trim){
+  const o = findObra(codigo);
+  if(!o) return false;
+  return Number(trim)>=Number(o.inicio) && Number(trim)<=Number(o.fim);
+}
+function actionsFor(trim){ return STATE.acoes.filter(a=>a.trimestre===trim); }
+
+const CURRENT_TRIM = String(Math.floor(new Date().getMonth()/3)+1);
+
+function occDone(obra, idx, i){ return !!STATE.occ[obra+'__'+idx+'__'+i]; }
+function toggleOcc(obra, idx, i){
+  const k = obra+'__'+idx+'__'+i;
+  if(STATE.occ[k]) delete STATE.occ[k]; else STATE.occ[k] = true;
+  scheduleSave();
+}
+function occCount(obra, idx, recorrencia){
+  let n=0;
+  for(let i=0;i<recorrencia;i++) if(occDone(obra,idx,i)) n++;
+  return n;
+}
+function getObs(obra, idx){ return STATE.obs[obra+'__'+idx] || ''; }
+function setObsVal(obra, idx, text){
+  const k = obra+'__'+idx;
+  if(text && text.trim()) STATE.obs[k] = text.trim(); else delete STATE.obs[k];
+  scheduleSave();
+}
+
+// ---------- cálculo ----------
+function creditForTrim(obraCodigo, trim){
+  const acts = actionsFor(trim);
+  if(!isVigente(obraCodigo, trim)) return {credit:TRIM_VALUE, vigente:false, previsto:acts.length, unidadesPrevistas:0, unidadesFeitas:0};
+  if(acts.length===0) return {credit:TRIM_VALUE, vigente:true, previsto:0, unidadesPrevistas:0, unidadesFeitas:0};
+  // cada ação vale uma fração IGUAL do trimestre, independente da recorrência;
+  // a recorrência só divide o valor daquela ação em partes iguais (não multiplica o peso)
+  const pesoPorAcao = TRIM_VALUE / acts.length;
+  let credit = 0;
+  acts.forEach(a=>{
+    const done = occCount(obraCodigo, a.id, a.recorrencia);
+    credit += (done / a.recorrencia) * pesoPorAcao;
+  });
+  const unidadesPrevistas = acts.reduce((s,a)=>s+a.recorrencia,0);
+  const unidadesFeitas = acts.reduce((s,a)=>s+occCount(obraCodigo,a.id,a.recorrencia),0);
+  return {credit, vigente:true, previsto:acts.length, unidadesPrevistas, unidadesFeitas};
+}
+function aderenciaObra(obraCodigo){
+  let sum=0;
+  TRIMS.forEach(t=>{ sum += creditForTrim(obraCodigo,t).credit; });
+  return sum; // 0-100
+}
+function pendingUnitsForTrim(obraCodigo, trim){
+  const r = creditForTrim(obraCodigo, trim);
+  if(!r.vigente) return 0;
+  return r.unidadesPrevistas - r.unidadesFeitas;
+}
+function pendenciasObra(obraCodigo, trimFilter){
+  const list = [];
+  const trims = trimFilter ? [trimFilter] : TRIMS.filter(t=>Number(t)<=Number(CURRENT_TRIM));
+  trims.forEach(trim=>{
+    if(!isVigente(obraCodigo,trim)) return;
+    actionsFor(trim).forEach(a=>{
+      const done = occCount(obraCodigo,a.id,a.recorrencia);
+      if(done < a.recorrencia) list.push({trim, acao:a.nome, id:a.id, done, recorrencia:a.recorrencia, obs:getObs(obraCodigo,a.id)});
+    });
+  });
+  return list;
+}
+
+// ---------- UI state ----------
+const params = new URLSearchParams(window.location.search);
+const lockedObra = params.get('obra'); // travamento "de verdade" via link (?obra=...)
+let previewObra = null; // travamento temporário só de tela, sem navegar (botão do olho)
+function activeLock(){ return lockedObra || previewObra; }
+let currentObra = lockedObra || (obrasList()[0] && obrasList()[0].codigo) || null;
+let currentTab = 'geral'; // 'geral' | 'preencher' | 'cadastro'
+let cadastroTrim = '2';
+let preencherTrim = TRIMS.includes(CURRENT_TRIM) ? CURRENT_TRIM : TRIMS[TRIMS.length-1];
+let mediaGeralTrims = new Set(TRIMS); // trimestres considerados na "Média geral das obras"
+
+const modePill = document.getElementById('modePill');
+const controlsBar = document.getElementById('controlsBar');
+const content = document.getElementById('content');
+
+function fmtPct(v){ return v.toFixed(2).replace('.',',')+'%'; }
+
+// ---------- AJUDA (botão "i") ----------
+function helpContentObra(){
+  return `
+    <h2>Como ler o seu painel</h2>
+    <div class="help-sub">Guia rápido para quem acompanha a obra</div>
+
+    <h3>📊 O número grande no topo</h3>
+    <p>É a <b>aderência acumulada</b> da sua obra em QSMS Qualidade no ano. Ela é a soma
+    do que foi cumprido em cada trimestre com ações previstas (T2, T3 e T4).</p>
+
+    <h3>🧮 Como esse número é calculado</h3>
+    <ul>
+      <li>Só T2, T3 e T4 têm ações de Qualidade previstas este ano — cada um vale
+      <b>33,33%</b> do total (T1 não entra na conta).</li>
+      <li>Dentro de cada trimestre, todas as ações valem <b>o mesmo peso</b>, não
+      importa quantas vezes precisam ser feitas.</li>
+      <li>Se uma ação precisa acontecer mais de uma vez no trimestre (ex: 3x), cada
+      execução vale uma fração igual daquele peso — fazer 2 das 3 já garante 2/3
+      do valor daquela ação.</li>
+      <li>Se a obra ainda não tinha começado (ou já tinha terminado) num trimestre,
+      esse trimestre pontua os 33,33% automaticamente — a obra não é penalizada
+      por não ter participado.</li>
+    </ul>
+
+    <h3>⚠️ Pendências</h3>
+    <p>São as ações que ainda faltam ser marcadas como feitas pela Sede, nos
+    trimestres em que a obra está participando. Quando aparecer uma fração
+    (ex: <span class="badge-mini">2/3</span>), significa que a ação tem mais de
+    uma execução prevista e ainda faltam algumas.</p>
+
+    <h3>📝 Observações</h3>
+    <p>Quando uma pendência tem um comentário da Sede embaixo dela, é uma
+    explicação sobre o que falta ou o que foi identificado naquela ação.</p>
+
+    <h3>📅 Detalhamento por trimestre</h3>
+    <p>Mostra ação por ação, com caixinhas indicando o que já foi marcado como
+    feito. Essa parte é só leitura — quem preenche é a Sede.</p>
+
+    <h3>🕒 Última atualização</h3>
+    <p>No rodapé do painel mostra quando a Sede salvou a última alteração.</p>
+  `;
+}
+
+function helpContentGestor(){
+  return `
+    <h2>Como usar este painel</h2>
+    <div class="help-sub">Guia completo — modo gestor</div>
+
+    <h3>🧮 Regra de pontuação</h3>
+    <ul>
+      <li>Só T2, T3 e T4 têm ações de Qualidade previstas — cada trimestre vale
+      <b>33,33%</b> (100 ÷ 3). T1 não entra na conta.</li>
+      <li>Dentro de um trimestre, cada ação vale uma fração <b>igual</b> do
+      trimestre, independente de quantas vezes ela precisa acontecer.
+      Fórmula: <span class="badge-mini">peso da ação = 33,33 ÷ nº de ações do trimestre</span>.</li>
+      <li>Se a ação tem recorrência maior que 1 (ex: 3x no trimestre), esse peso é
+      dividido em partes iguais entre as execuções — não soma peso extra.</li>
+      <li>Se a obra não estava vigente (ainda não tinha começado ou já tinha
+      terminado) num trimestre, esse trimestre pontua os 33,33% automaticamente,
+      pra não penalizar a obra.</li>
+      <li>Não marcar uma execução = pendente automaticamente.</li>
+    </ul>
+
+    <h3>✅ Como marcar o avanço</h3>
+    <p>Na aba <b>Preencher Avanço</b>, escolha a obra e o trimestre. Ações com
+    recorrência 1 mostram uma caixinha só; ações com recorrência maior mostram
+    uma caixinha numerada pra cada execução (①②③) — marque quantas de fato
+    aconteceram. O ícone 📝 abre um campo de observação por ação, visível
+    também pra quem acessar a visão da obra.</p>
+
+    <h3>🏗️ Cadastro de obras e ações</h3>
+    <p>Na aba <b>Obras & Ações</b>, cadastre/edite obras (código, nome, início e
+    fim de vigência em trimestres) e as ações de cada trimestre (nome e quantas
+    vezes acontece no trimestre). O botão "Importar cronograma QSMS 2026"
+    recarrega os dados originais caso precise resetar.</p>
+
+    <h3>📊 Planilha para importação em massa (.xlsx)</h3>
+    <p>Os ícones 📊 (exportar) e 📥 (importar) trabalham com um arquivo Excel de
+    3 abas:</p>
+    <table>
+      <tr><th>Aba</th><th>Colunas</th></tr>
+      <tr><td><b>Obras</b></td><td>codigo · nome · inicio_trimestre · fim_trimestre</td></tr>
+      <tr><td><b>Ações</b></td><td>trimestre · acao · vezes_no_trimestre</td></tr>
+      <tr><td><b>Avanço</b></td><td>obra · trimestre · acao · execucao · de_quantas · feito (SIM/NAO) · observacao</td></tr>
+    </table>
+    <p>Exporte, edite em massa no Excel (ex: marcar várias linhas como SIM de
+    uma vez) e importe de volta. O painel reconhece cada linha pelo nome da
+    ação e o trimestre escritos nela — então é só manter o nome da ação igual
+    ao que já está cadastrado, sem se preocupar com mais nada por trás.</p>
+
+    <h3>💾 Salvar e histórico</h3>
+    <p>O painel salva sozinho a cada alteração. O botão <b>💾 Salvar</b> força
+    o salvamento na hora. O rodapé mostra a data/hora da última atualização.</p>
+
+    <h3>👁 Ver como a obra vê / 🔗 Gerar link</h3>
+    <p>O ícone 👁 mostra uma pré-visualização rápida de como aquela obra
+    enxerga o painel (somente leitura). O botão "Gerar link da obra" copia um
+    link com <span class="badge-mini">?obra=CODIGO</span> — esse link trava a
+    tela direto na visão daquela obra, pra mandar pra quem acompanha a obra.</p>
+
+    <h3>⬇⬆ Backup completo (JSON)</h3>
+    <p>Diferente da planilha, o backup em <b>.json</b> guarda tudo (obras, ações,
+    avanço e observações) de forma fiel — é pra restaurar o painel inteiro, não
+    pra editar à mão.</p>
+  `;
+}
+
+function openHelp(){
+  document.getElementById('helpContent').innerHTML = activeLock() ? helpContentObra() : helpContentGestor();
+  document.getElementById('helpOverlay').style.display = 'flex';
+}
+function closeHelp(){
+  document.getElementById('helpOverlay').style.display = 'none';
+}
+document.getElementById('helpBtn').onclick = openHelp;
+document.getElementById('helpCloseBtn').onclick = closeHelp;
+document.getElementById('helpOverlay').onclick = (e)=>{ if(e.target.id==='helpOverlay') closeHelp(); };
+
+document.getElementById('exportBtn').onclick = (e)=>{
+  e.preventDefault();
+  const blob = new Blob([JSON.stringify(STATE, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'backup_qsms_qualidade_'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+};
+document.getElementById('importBtn').onclick = (e)=>{ e.preventDefault(); document.getElementById('importFile').click(); };
+document.getElementById('importFile').onchange = (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    try{
+      const parsed = JSON.parse(reader.result);
+      STATE = {obras: parsed.obras||[], acoes: parsed.acoes||[], occ: parsed.occ||{}, obs: parsed.obs||{}};
+      if(!currentObra && STATE.obras[0]) currentObra = STATE.obras[0].codigo;
+      scheduleSave();
+      render();
+      alert('Backup importado com sucesso.');
+    }catch(err){
+      alert('Não consegui ler esse arquivo. Confere se é o backup exportado por aqui.');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+};
+
+function mediaGeralObras(trimsSelecionados){
+  const obras = obrasList();
+  if(obras.length===0 || trimsSelecionados.length===0) return 0;
+  let soma = 0;
+  obras.forEach(o=>{
+    trimsSelecionados.forEach(t=>{ soma += creditForTrim(o.codigo, t).credit; });
+  });
+  return soma / obras.length;
+}
+
+function renderMediaGeral(){
+  const trimsArr = TRIMS.filter(t=>mediaGeralTrims.has(t));
+  const max = trimsArr.length * TRIM_VALUE;
+  const media = mediaGeralObras(trimsArr);
+  const obrasQtd = obrasList().length;
+  const chips = TRIMS.map(t=>`<button class="trim-chip ${mediaGeralTrims.has(t)?'on':''}" data-mediatrim="${t}">T${t}</button>`).join('');
+  return `<div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px;">
+      <div>
+        <div style="font-size:11.5px;color:var(--text-muted);text-transform:uppercase;font-weight:700;letter-spacing:.04em;">Média geral das obras</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:38px;color:var(--navy-800);line-height:1.1;margin-top:2px;">${trimsArr.length? fmtPct(media) : '—'}</div>
+        <div style="font-size:11.5px;color:var(--text-muted);margin-top:2px;">
+          ${trimsArr.length
+            ? `Média de ${obrasQtd} obra(s) · trimestre(s) selecionado(s): ${trimsArr.map(t=>'T'+t).join(' + ')} · máximo possível ${fmtPct(max)}`
+            : 'Selecione ao menos um trimestre'}
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">${chips}</div>
+    </div>
+  </div>`;
+}
+
+function attachMediaGeralChips(){
+  content.querySelectorAll('[data-mediatrim]').forEach(btn=>{
+    btn.onclick = ()=>{
+      const t = btn.dataset.mediatrim;
+      if(mediaGeralTrims.has(t)) mediaGeralTrims.delete(t); else mediaGeralTrims.add(t);
+      render();
+    };
+  });
+}
+
+function renderControls(){
+  if(lockedObra){
+    controlsBar.innerHTML = `
+      <div class="field">
+        <label>Obra</label>
+        <select disabled><option>${lockedObra}</option></select>
+      </div>
+      <button class="linkbtn" id="backToGestorBtn" style="border-color:var(--border);color:var(--text-muted);">← Voltar ao modo gestor</button>
+    `;
+    document.getElementById('backToGestorBtn').onclick = ()=>{
+      const url = new URL(window.location.href);
+      url.searchParams.delete('obra');
+      window.location.href = url.toString();
+    };
+    return;
+  }
+  if(previewObra){
+    controlsBar.innerHTML = `
+      <div class="field">
+        <label>${isAuthed() ? 'Pré-visualizando obra' : 'Painel da obra'}</label>
+        <select disabled><option>${previewObra}</option></select>
+      </div>
+      <button class="linkbtn" id="exitPreviewBtn" style="border-color:var(--border);color:var(--text-muted);">← ${isAuthed() ? 'Sair da pré-visualização' : 'Trocar de obra / entrar como gestor'}</button>
+    `;
+    document.getElementById('exitPreviewBtn').onclick = ()=>{
+      if(isAuthed()){ previewObra = null; render(); }
+      else { backToLanding(); }
+    };
+    return;
+  }
+  const obras = obrasList();
+  controlsBar.innerHTML = `
+    <div class="field" style="display:flex;flex-direction:row;align-items:flex-end;gap:6px;">
+      <div style="display:flex;flex-direction:column;">
+        <label>Obra selecionada</label>
+        <select id="obraSelect" ${obras.length===0?'disabled':''}>
+          ${obras.length===0 ? '<option>— nenhuma —</option>' : obras.map(o=>`<option value="${o.codigo}" ${o.codigo===currentObra?'selected':''}>${o.nome}</option>`).join('')}
+        </select>
+      </div>
+      <button class="icon-btn" id="previewObraBtn" ${obras.length===0?'disabled':''} title="Ver como a obra vê">👁</button>
+    </div>
+    <div class="tabbar">
+      <button class="tabbtn ${currentTab==='geral'?'active':''}" data-tab="geral">Visão geral</button>
+      <button class="tabbtn ${currentTab==='preencher'?'active':''}" data-tab="preencher">Preencher avanço</button>
+      <button class="tabbtn ${currentTab==='cadastro'?'active':''}" data-tab="cadastro">Obras &amp; Ações</button>
+      <button class="linkbtn" id="saveNowBtn" style="border-color:var(--green-ok);color:var(--green-ok);">💾 Salvar</button>
+      <button class="linkbtn" id="genLinkBtn" ${obras.length===0?'disabled':''}>🔗 Gerar link da obra</button>
+      <button class="icon-btn" id="exportXlsxBtn" title="Exportar planilhas para importação em massa">📊</button>
+      <button class="icon-btn" id="importXlsxBtn" title="Importar planilhas (ações e avanço em massa)">📥</button>
+      <input type="file" id="importXlsxFile" accept=".xlsx" style="display:none;">
+    </div>
+  `;
+  if(obras.length){
+    document.getElementById('obraSelect').onchange = (e)=>{ currentObra = e.target.value; render(); };
+  }
+  controlsBar.querySelectorAll('.tabbtn').forEach(b=>{
+    b.onclick = ()=>{ currentTab = b.dataset.tab; render(); };
+  });
+  const genBtn = document.getElementById('genLinkBtn');
+  if(genBtn) genBtn.onclick = ()=>{
+    const url = new URL(window.location.href);
+    url.searchParams.set('obra', currentObra);
+    const link = url.toString();
+    try{ navigator.clipboard && navigator.clipboard.writeText(link); }catch(e){}
+    alert('Link da obra '+currentObra+' copiado:\n\n'+link+'\n\n(funciona quando este painel estiver publicado/hospedado — abra este mesmo link e cole ?obra='+currentObra+' na URL)');
+  };
+  const saveNowBtn = document.getElementById('saveNowBtn');
+  if(saveNowBtn) saveNowBtn.onclick = salvarAgora;
+  const previewBtn = document.getElementById('previewObraBtn');
+  if(previewBtn) previewBtn.onclick = ()=>{
+    previewObra = currentObra;
+    render();
+  };
+  document.getElementById('exportXlsxBtn').onclick = exportXlsx;
+  document.getElementById('importXlsxBtn').onclick = ()=>{ document.getElementById('importXlsxFile').click(); };
+  document.getElementById('importXlsxFile').onchange = handleImportXlsx;
+}
+
+function renderKPIs(obra, trimFilter){
+  const total = aderenciaObra(obra);
+  const cls = total>=75?'ok':(total>=40?'':'warn');
+  let pend, pendNote;
+  if(trimFilter){
+    pend = pendingUnitsForTrim(obra, trimFilter);
+    pendNote = `Execuções pendentes no ${trimFilter}º trimestre`;
+  } else {
+    pend = pendenciasObra(obra).length;
+    pendNote = 'Em trimestres vigentes, ainda não concluídas';
+  }
+  return `
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="label">Aderência QSMS Qualidade — ${obra}</div>
+        <div class="value ${cls}">${fmtPct(total)}</div>
+        <div class="note">Soma de T2, T3 e T4 (${fmtPct(TRIM_VALUE)} cada)</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Ações pendentes</div>
+        <div class="value warn">${pend}</div>
+        <div class="note">${pendNote}</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderRanking(highlightObra){
+  const rows = obrasList().map(o=>({o:o.codigo, nome:o.nome, v:aderenciaObra(o.codigo)})).sort((a,b)=>b.v-a.v);
+  if(rows.length===0) return `<div class="card"><div class="empty">Nenhuma obra cadastrada ainda.</div></div>`;
+  return `<div class="card">
+    ${rows.map(r=>`
+      <div class="rank-row ${r.o===highlightObra?'me':''}">
+        <div class="rank-label">${r.nome}</div>
+        <div class="rank-track"><div class="rank-fill ${r.v<50?'low':''}" style="width:${r.v.toFixed(1)}%"></div></div>
+        <div class="rank-pct">${fmtPct(r.v)}</div>
+      </div>
+    `).join('')}
+  </div>`;
+}
+
+function renderPendencias(obra){
+  const list = pendenciasObra(obra).slice(0, 80);
+  if(list.length===0){
+    return `<div class="card"><div class="empty"><b>Nenhuma pendência.</b><br>Todas as ações vigentes até o trimestre atual já foram marcadas como realizadas.</div></div>`;
+  }
+  return `<div class="card">
+    ${list.map(p=>`
+      <div class="pend-item">
+        <div class="pend-dot"></div>
+        <div class="pend-main" style="flex:1;">
+          <div class="t">${p.acao} ${p.recorrencia>1?`<span class="pend-tag" style="margin-left:6px;">${p.done}/${p.recorrencia}</span>`:''}</div>
+          <div class="m">${p.trim}º trimestre</div>
+          ${p.obs ? `<div class="obs-display"><b>Observação do gestor:</b> ${p.obs}</div>` : ''}
+        </div>
+      </div>
+    `).join('')}
+  </div>`;
+}
+
+function renderCheckUnit(obra, id, occIndex, recorrencia, editable){
+  const done = occDone(obra, id, occIndex);
+  if(recorrencia<=1){
+    return editable
+      ? `<div class="chk ${done?'checked':''}" data-obra="${obra}" data-idx="${id}" data-occ="0"></div>`
+      : `<div class="chk readonly ${done?'checked':''}"></div>`;
+  }
+  return editable
+    ? `<div class="chk-chip ${done?'checked':''}" data-obra="${obra}" data-idx="${id}" data-occ="${occIndex}" title="Execução ${occIndex+1} de ${recorrencia}">${done?'✓':occIndex+1}</div>`
+    : `<div class="chk-chip readonly ${done?'checked':''}" title="Execução ${occIndex+1} de ${recorrencia}">${done?'✓':occIndex+1}</div>`;
+}
+function renderCheckGroup(obra, a, editable){
+  if(a.recorrencia<=1) return renderCheckUnit(obra,a.id,0,1,editable);
+  return `<div class="chk-group">${Array.from({length:a.recorrencia}).map((_,i)=>renderCheckUnit(obra,a.id,i,a.recorrencia,editable)).join('')}</div>`;
+}
+
+function renderTrimGroups(obra, editable, trimsToShow){
+  if(!trimsToShow) trimsToShow = TRIMS.filter(t=>Number(t)<=Number(CURRENT_TRIM));
+  return trimsToShow.map(trim=>{
+    const acts = actionsFor(trim);
+    const vigente = isVigente(obra,trim);
+    const isCurrent = trim===CURRENT_TRIM;
+    return `
+    <div class="trim-group">
+      <div class="trim-title">
+        <span>${trim}º Trimestre ${isCurrent?'· em andamento':''} ${acts.length? '· '+acts.length+' ações':'· sem ações cadastradas'}</span>
+        ${!vigente ? `<span class="na">FORA DE VIGÊNCIA · ${fmtPct(TRIM_VALUE)} AUTOMÁTICO</span>` : ''}
+      </div>
+      ${acts.length===0 ? '' : acts.map(a=>{
+        const doneCount = occCount(obra,a.id,a.recorrencia);
+        const complete = doneCount>=a.recorrencia;
+        const obs = getObs(obra,a.id);
+        if(!vigente){
+          return `<div class="acao-row" style="opacity:.45;">
+            <div class="chk readonly" style="background:#eef1f6;border-color:#eef1f6;"></div>
+            <div class="txt">${a.nome}${a.recorrencia>1?` <span class="rec-hint">(${a.recorrencia}x no trimestre)</span>`:''}</div>
+          </div>`;
+        }
+        if(!editable){
+          return `<div class="acao-wrap">
+            <div class="acao-row ${complete?'done':''}">
+              ${renderCheckGroup(obra,a,false)}
+              <div class="txt">${a.nome}${a.recorrencia>1?` <span class="rec-hint">(${a.recorrencia}x no trimestre)</span>`:''}</div>
+              ${!complete ? `<span class="pend-tag">${a.recorrencia>1?doneCount+'/'+a.recorrencia:'Pendente'}</span>`:''}
+            </div>
+            ${obs ? `<div class="note-area" style="padding-top:0;"><div class="obs-display"><b>Observação do gestor:</b> ${obs}</div></div>` : ''}
+          </div>`;
+        }
+        return `<div class="acao-wrap" data-noteidx="${obra}__${a.id}">
+          <div class="acao-row ${complete?'done':''}">
+            ${renderCheckGroup(obra,a,true)}
+            <div class="txt">${a.nome}${a.recorrencia>1?` <span class="rec-hint">(${a.recorrencia}x no trimestre)</span>`:''}</div>
+            <div class="note-toggle ${obs?'has-note':''}" data-noteBtn="${obra}__${a.id}" title="Observação">📝</div>
+          </div>
+          <div class="note-area" data-notebox="${obra}__${a.id}" style="display:${obs?'block':'none'};">
+            <textarea data-noteinput="${obra}__${a.id}" placeholder="Ex.: faltou anexar o RAPP no Fluig — pedir para a obra reenviar.">${obs}</textarea>
+            <div class="hint">Não marcar a caixinha = pendente automaticamente. Essa observação aparece para quem acessar o link da obra.</div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }).join('');
+}
+
+// ---------- IMPORTAÇÃO/EXPORTAÇÃO EM MASSA (xlsx) ----------
+function exportXlsx(){
+  if(!window.XLSX){ alert('Biblioteca de planilhas não carregou — verifique sua conexão e tente novamente.'); return; }
+  const wb = XLSX.utils.book_new();
+
+  const obrasRows = obrasList().map(o=>({codigo:o.codigo, nome:o.nome, inicio_trimestre:o.inicio, fim_trimestre:o.fim}));
+  const wsObras = XLSX.utils.json_to_sheet(obrasRows.length?obrasRows:[{codigo:'', nome:'', inicio_trimestre:'', fim_trimestre:''}]);
+  XLSX.utils.book_append_sheet(wb, wsObras, 'Obras');
+
+  const acoesRows = STATE.acoes.slice().sort((a,b)=>a.trimestre.localeCompare(b.trimestre)).map(a=>({
+    trimestre:a.trimestre, acao:a.nome, vezes_no_trimestre:a.recorrencia
+  }));
+  const wsAcoes = XLSX.utils.json_to_sheet(acoesRows.length?acoesRows:[{trimestre:'', acao:'', vezes_no_trimestre:''}]);
+  XLSX.utils.book_append_sheet(wb, wsAcoes, 'Ações');
+
+  const avancoRows = [];
+  obrasList().forEach(o=>{
+    TRIMS.forEach(trim=>{
+      actionsFor(trim).forEach(a=>{
+        for(let i=0;i<a.recorrencia;i++){
+          avancoRows.push({
+            obra:o.codigo,
+            trimestre:trim,
+            acao:a.nome,
+            execucao: i+1,
+            de_quantas: a.recorrencia,
+            feito: occDone(o.codigo, a.id, i) ? 'SIM' : 'NAO',
+            observacao: getObs(o.codigo, a.id)
+          });
+        }
+      });
+    });
+  });
+  const wsAvanco = XLSX.utils.json_to_sheet(avancoRows.length?avancoRows:[{obra:'', trimestre:'', acao:'', execucao:'', de_quantas:'', feito:'', observacao:''}]);
+  XLSX.utils.book_append_sheet(wb, wsAvanco, 'Avanço');
+
+  XLSX.writeFile(wb, 'qsms_qualidade_'+new Date().toISOString().slice(0,10)+'.xlsx');
+}
+
+function handleImportXlsx(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  if(!window.XLSX){ alert('Biblioteca de planilhas não carregou — verifique sua conexão e tente novamente.'); return; }
+  const reader = new FileReader();
+  reader.onload = (evt)=>{
+    try{
+      const wb = XLSX.read(evt.target.result, {type:'array'});
+      let obrasAdded=0, obrasUpdated=0, acoesAdded=0, acoesUpdated=0, avancoAplicado=0, avancoIgnorado=0;
+
+      if(wb.Sheets['Obras']){
+        const rows = XLSX.utils.sheet_to_json(wb.Sheets['Obras']);
+        rows.forEach(r=>{
+          const codigo = String(r.codigo||'').trim();
+          if(!codigo) return;
+          const nome = String(r.nome||codigo).trim();
+          const inicio = Number(r.inicio_trimestre)||1;
+          const fim = Number(r.fim_trimestre)||4;
+          const existente = findObra(codigo);
+          if(existente){ existente.nome=nome; existente.inicio=inicio; existente.fim=fim; obrasUpdated++; }
+          else { STATE.obras.push({codigo, nome, inicio, fim}); obrasAdded++; }
+        });
+      }
+
+      if(wb.Sheets['Ações']){
+        const rows = XLSX.utils.sheet_to_json(wb.Sheets['Ações']);
+        rows.forEach(r=>{
+          const trimestre = String(r.trimestre||'').trim();
+          const nome = String(r.acao||'').trim();
+          const recorrencia = Number(r.vezes_no_trimestre)||1;
+          if(!trimestre || !nome) return;
+          const existente = STATE.acoes.find(a=>a.trimestre===trimestre && a.nome===nome);
+          if(existente){ existente.recorrencia = recorrencia; acoesUpdated++; }
+          else { STATE.acoes.push({id:uid(), trimestre, nome, recorrencia}); acoesAdded++; }
+        });
+      }
+
+      if(wb.Sheets['Avanço']){
+        const rows = XLSX.utils.sheet_to_json(wb.Sheets['Avanço']);
+        rows.forEach(r=>{
+          const obraCod = String(r.obra||'').trim();
+          const trimestre = String(r.trimestre||'').trim();
+          const nome = String(r.acao||'').trim();
+          const execucao = Number(r.execucao)||1;
+          const feito = String(r.feito||'').trim().toUpperCase();
+          const acao = STATE.acoes.find(a=>a.trimestre===trimestre && a.nome===nome);
+          if(!acao || !findObra(obraCod)){ avancoIgnorado++; return; }
+          const i = execucao-1;
+          const k = obraCod+'__'+acao.id+'__'+i;
+          if(feito==='SIM') STATE.occ[k]=true; else delete STATE.occ[k];
+          if(r.observacao!==undefined && String(r.observacao).trim()){
+            STATE.obs[obraCod+'__'+acao.id] = String(r.observacao).trim();
+          }
+          avancoAplicado++;
+        });
+      }
+
+      scheduleSave();
+      render();
+      alert(`Importação concluída.\n\nObras: ${obrasAdded} novas, ${obrasUpdated} atualizadas.\nAções: ${acoesAdded} novas, ${acoesUpdated} atualizadas.\nAvanço: ${avancoAplicado} linhas aplicadas${avancoIgnorado?', '+avancoIgnorado+' ignoradas (obra ou ação não encontrada)':''}.`);
+    }catch(err){
+      alert('Não consegui ler essa planilha. Confere se ela segue o modelo exportado por aqui (abas "Obras", "Ações" e "Avanço").');
+    }
+  };
+  reader.readAsArrayBuffer(file);
+  e.target.value = '';
+}
+
+// ---------- CADASTRO (obras / ações) ----------
+function trimSelectHtml(id, val, min, max){
+  let opts = '';
+  for(let t=min;t<=max;t++) opts += `<option value="${t}" ${t===val?'selected':''}>T${t}</option>`;
+  return `<select id="${id}">${opts}</select>`;
+}
+function importarPadrao(){
+  if(!confirm('Isso substitui as obras e ações de Qualidade cadastradas pelas do cronograma enviado (2026). Continuar?')) return;
+  STATE.obras = OBRAS_PADRAO.map(o=>Object.assign({}, o));
+  STATE.acoes = ACOES_PADRAO.map(a=>Object.assign({id:uid()}, a));
+  if(!currentObra && STATE.obras[0]) currentObra = STATE.obras[0].codigo;
+  scheduleSave();
+  render();
+}
+function renderCadastro(){
+  const obras = obrasList();
+  const acoesDoTrim = actionsFor(cadastroTrim);
+  return `
+    <div class="section">
+      <div class="section-title"><span class="bar"></span>Obras</div>
+      <div class="card">
+        <table class="data-table">
+          <thead><tr><th style="width:90px;">Código</th><th>Nome</th><th style="width:70px;">Início</th><th style="width:70px;">Fim</th><th style="width:80px;"></th></tr></thead>
+          <tbody>
+            ${obras.length===0 ? `<tr><td colspan="5" class="empty-cad">Nenhuma obra cadastrada.</td></tr>` : obras.map(o=>`<tr>
+              <td><input class="cad-input" data-obra="${o.codigo}" data-field="codigo" value="${o.codigo}"></td>
+              <td><input class="cad-input" data-obra="${o.codigo}" data-field="nome" value="${o.nome}"></td>
+              <td>${trimSelectHtml('obraInicio_'+o.codigo, o.inicio, 1, 4)}</td>
+              <td>${trimSelectHtml('obraFim_'+o.codigo, o.fim, 1, 4)}</td>
+              <td><button class="linkbtn danger-btn" data-remove-obra="${o.codigo}">Remover</button></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+        <div class="cad-form">
+          <div class="field"><label>Código</label><input id="novaObraCodigo" class="cad-input" placeholder="Ex: 440" style="width:100px;"></div>
+          <div class="field"><label>Nome</label><input id="novaObraNome" class="cad-input" placeholder="Ex: M.440" style="width:160px;"></div>
+          <div class="field"><label>Início</label>${trimSelectHtml('novaObraInicio',1,1,4)}</div>
+          <div class="field"><label>Fim</label>${trimSelectHtml('novaObraFim',4,1,4)}</div>
+          <button class="linkbtn" id="addObraBtn">+ Adicionar obra</button>
+          <button class="linkbtn" id="importPadraoBtn" style="border-color:var(--border);color:var(--text-muted);">Importar cronograma QSMS 2026</button>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title"><span class="bar"></span>Ações por trimestre</div>
+      <div class="card">
+        <div class="field" style="max-width:160px;margin-bottom:14px;"><label>Trimestre</label>${trimSelectHtml('cadastroTrimSelect', Number(cadastroTrim), 2, 4)}</div>
+        <table class="data-table">
+          <thead><tr><th>Ação</th><th style="width:130px;">Vezes no trim.</th><th style="width:80px;"></th></tr></thead>
+          <tbody>
+            ${acoesDoTrim.length===0 ? `<tr><td colspan="3" class="empty-cad">Nenhuma ação cadastrada para este trimestre.</td></tr>` : acoesDoTrim.map(a=>`<tr>
+              <td><input class="cad-input" data-acao="${a.id}" data-field="nome" value="${a.nome}"></td>
+              <td><input type="number" min="1" class="cad-input" data-acao="${a.id}" data-field="recorrencia" value="${a.recorrencia}" style="width:70px;"></td>
+              <td><button class="linkbtn danger-btn" data-remove-acao="${a.id}">Remover</button></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+        <div class="cad-form">
+          <div class="field" style="min-width:260px;"><label>Nome da ação</label><input id="novaAcaoNome" class="cad-input" placeholder="Ex: Reunião de qualidade"></div>
+          <div class="field"><label>Vezes no trimestre</label><input id="novaAcaoRecorrencia" type="number" min="1" value="1" class="cad-input" style="width:90px;"></div>
+          <button class="linkbtn" id="addAcaoBtn">+ Adicionar ação</button>
+        </div>
+        <div class="hint" style="margin-top:8px;">Cada execução prevista vale uma fração igual de ${fmtPct(TRIM_VALUE)} do trimestre — não é preciso definir peso manualmente.</div>
+      </div>
+    </div>
+  `;
+}
+function attachCadastro(){
+  content.querySelectorAll('[data-obra][data-field]').forEach(inp=>{
+    inp.onchange = ()=>{
+      const o = findObra(inp.dataset.obra);
+      if(!o) return;
+      const field = inp.dataset.field;
+      o[field] = (field==='codigo'||field==='nome') ? inp.value.trim() : Number(inp.value);
+      if(field==='codigo' && currentObra===inp.dataset.obra) currentObra = o.codigo;
+      scheduleSave(); render();
+    };
+  });
+  STATE.obras.forEach(o=>{
+    const i1 = document.getElementById('obraInicio_'+o.codigo);
+    const i2 = document.getElementById('obraFim_'+o.codigo);
+    if(i1) i1.onchange = ()=>{ o.inicio = Number(i1.value); scheduleSave(); render(); };
+    if(i2) i2.onchange = ()=>{ o.fim = Number(i2.value); scheduleSave(); render(); };
+  });
+  content.querySelectorAll('[data-remove-obra]').forEach(btn=>{
+    btn.onclick = ()=>{
+      if(!confirm('Remover esta obra?')) return;
+      STATE.obras = STATE.obras.filter(o=>o.codigo!==btn.dataset.removeObra);
+      if(currentObra===btn.dataset.removeObra) currentObra = STATE.obras[0] ? STATE.obras[0].codigo : null;
+      scheduleSave(); render();
+    };
+  });
+  const addObraBtn = document.getElementById('addObraBtn');
+  if(addObraBtn) addObraBtn.onclick = ()=>{
+    const codigo = document.getElementById('novaObraCodigo').value.trim();
+    const nome = document.getElementById('novaObraNome').value.trim();
+    if(!codigo || !nome) return;
+    if(findObra(codigo)){ alert('Já existe uma obra com esse código.'); return; }
+    const inicio = Number(document.getElementById('novaObraInicio').value);
+    const fim = Number(document.getElementById('novaObraFim').value);
+    STATE.obras.push({codigo, nome, inicio, fim});
+    if(!currentObra) currentObra = codigo;
+    scheduleSave(); render();
+  };
+  const importBtn = document.getElementById('importPadraoBtn');
+  if(importBtn) importBtn.onclick = importarPadrao;
+
+  const trimSel = document.getElementById('cadastroTrimSelect');
+  if(trimSel) trimSel.onchange = ()=>{ cadastroTrim = trimSel.value; render(); };
+
+  content.querySelectorAll('[data-acao][data-field]').forEach(inp=>{
+    inp.onchange = ()=>{
+      const a = STATE.acoes.find(x=>x.id===inp.dataset.acao);
+      if(!a) return;
+      a[inp.dataset.field] = inp.dataset.field==='recorrencia' ? Number(inp.value) : inp.value;
+      scheduleSave(); render();
+    };
+  });
+  content.querySelectorAll('[data-remove-acao]').forEach(btn=>{
+    btn.onclick = ()=>{
+      STATE.acoes = STATE.acoes.filter(a=>a.id!==btn.dataset.removeAcao);
+      scheduleSave(); render();
+    };
+  });
+  const addAcaoBtn = document.getElementById('addAcaoBtn');
+  if(addAcaoBtn) addAcaoBtn.onclick = ()=>{
+    const nome = document.getElementById('novaAcaoNome').value.trim();
+    const recorrencia = Number(document.getElementById('novaAcaoRecorrencia').value) || 1;
+    if(!nome) return;
+    STATE.acoes.push({id:uid(), trimestre:cadastroTrim, nome, recorrencia});
+    document.getElementById('novaAcaoNome').value='';
+    scheduleSave(); render();
+  };
+}
+
+function attachChecks(editable){
+  if(!editable) return;
+  content.querySelectorAll('[data-idx][data-occ]').forEach(el=>{
+    el.onclick = ()=>{
+      toggleOcc(el.dataset.obra, el.dataset.idx, Number(el.dataset.occ));
+      render();
+    };
+  });
+  content.querySelectorAll('[data-noteBtn]').forEach(btn=>{
+    btn.onclick = ()=>{
+      const key = btn.dataset.notebtn;
+      const box = content.querySelector(`[data-notebox="${key}"]`);
+      if(box) box.style.display = box.style.display==='none' ? 'block' : 'none';
+    };
+  });
+  content.querySelectorAll('[data-noteinput]').forEach(ta=>{
+    let t=null;
+    ta.oninput = ()=>{
+      clearTimeout(t);
+      const [obra, id] = ta.dataset.noteinput.split('__');
+      t = setTimeout(()=>setObsVal(obra, id, ta.value), 300);
+    };
+  });
+}
+
+function render(){
+  const lockCode = activeLock();
+  if(!lockCode && needsAuth() && !isAuthed()){
+    // ainda não escolheu Sede/Obra ou não digitou a senha — não renderiza nada do modo gestor
+    modePill.textContent = '';
+    controlsBar.innerHTML = '';
+    content.innerHTML = '';
+    return;
+  }
+  if(lockCode){
+    modePill.textContent = 'Visão da obra '+lockCode;
+    modePill.className = 'mode-pill';
+  } else {
+    modePill.textContent = 'Modo gestor';
+    modePill.className = 'mode-pill edit';
+  }
+
+  const warnEl = document.getElementById('storageWarning');
+  if(warnEl) warnEl.style.display = (loaded && !storageAvailable && !lockCode) ? 'flex' : 'none';
+  const warnText = document.getElementById('storageWarningText');
+  if(warnText){
+    warnText.innerHTML = APPS_SCRIPT_URL
+      ? `<b>Não consegui salvar na sua planilha do Google agora.</b> Se você está testando aqui dentro do chat do Claude, isso é esperado — o ambiente de pré-visualização do Claude bloqueia conexões com sites externos por segurança, então a planilha não responde por aqui. Baixe este arquivo e abra direto no navegador (fora do Claude) para usar de verdade com o Google Sheets. Suas marcações continuam funcionando nesta sessão — use "Exportar backup" para não perder o que foi preenchido.`
+      : `<b>Salvamento automático indisponível neste ambiente.</b> Isso acontece quando o arquivo é aberto fora do Claude sem uma planilha do Google configurada. Suas marcações continuam funcionando nesta sessão — use o botão "Exportar backup" para não perder o que foi preenchido.`;
+  }
+
+  renderLastUpdated();
+  const backupWrap = document.getElementById('backupLinksWrap');
+  if(backupWrap) backupWrap.style.display = lockCode ? 'none' : 'inline';
+  renderControls();
+
+  if(!loaded){
+    content.innerHTML = `<div class="section"><div class="card"><div class="empty">Carregando dados…</div></div></div>`;
+    return;
+  }
+
+  if(lockCode){
+    if(!findObra(lockCode)){
+      content.innerHTML = `<div class="section"><div class="card"><div class="empty">Obra "${lockCode}" não encontrada.</div></div></div>`;
+      return;
+    }
+    content.innerHTML = `
+      <div class="section">${renderKPIs(lockCode)}</div>
+      <div class="section">
+        <div class="section-title"><span class="bar"></span>Pendências</div>
+        ${renderPendencias(lockCode)}
+      </div>
+      <div class="section">
+        <div class="section-title"><span class="bar"></span>Detalhamento por trimestre</div>
+        <div class="card" style="padding:0;overflow:hidden;">${renderTrimGroups(lockCode, false)}</div>
+      </div>
+    `;
+    return;
+  }
+
+  if(!currentObra || !findObra(currentObra)){
+    currentObra = obrasList()[0] ? obrasList()[0].codigo : null;
+  }
+
+  if(currentTab==='cadastro'){
+    content.innerHTML = (currentObra ? `<div class="section">${renderKPIs(currentObra, cadastroTrim)}</div>` : '') + renderCadastro();
+    attachCadastro();
+    return;
+  }
+
+  if(!currentObra){
+    content.innerHTML = `<div class="section"><div class="card"><div class="empty">Nenhuma obra cadastrada ainda. Vá em "Obras &amp; Ações" para começar (ou clique em "Importar cronograma QSMS 2026").</div></div></div>`;
+    return;
+  }
+
+  if(currentTab==='geral'){
+    content.innerHTML = `
+      <div class="section">
+        <div class="section-title"><span class="bar"></span>Média geral das obras</div>
+        ${renderMediaGeral()}
+      </div>
+      <div class="section">${renderKPIs(currentObra)}</div>
+      <div class="section">
+        <div class="section-title"><span class="bar"></span>Percentual de aderência — todas as obras</div>
+        ${renderRanking(currentObra)}
+      </div>
+      <div class="section">
+        <div class="section-title"><span class="bar"></span>Pendências — ${currentObra}</div>
+        ${renderPendencias(currentObra)}
+      </div>
+    `;
+    attachMediaGeralChips();
+  } else {
+    if(!TRIMS.includes(preencherTrim)) preencherTrim = TRIMS[0];
+    content.innerHTML = `
+      <div class="section">${renderKPIs(currentObra, preencherTrim)}</div>
+      <div class="section">
+        <div class="section-title"><span class="bar"></span>Marcar ações realizadas — ${currentObra}</div>
+        <div class="field" style="max-width:160px;margin-bottom:12px;">
+          <label>Trimestre</label>${trimSelectHtml('preencherTrimSelect', Number(preencherTrim), 2, 4)}
+        </div>
+        <div class="card" style="padding:0;overflow:hidden;">${renderTrimGroups(currentObra, true, [preencherTrim])}</div>
+      </div>
+    `;
+    const psel = document.getElementById('preencherTrimSelect');
+    if(psel) psel.onchange = ()=>{ preencherTrim = psel.value; render(); };
+    attachChecks(true);
+  }
+}
+
+function needsAuth(){ return !lockedObra; }
+function isAuthed(){
+  if(!needsAuth()) return true;
+  try{ return sessionStorage.getItem('qsms_gestor_secret') === GESTOR_SECRET; }
+  catch(e){ return false; }
+}
+function showAuthGate(errorMsg){
+  document.getElementById('landingOverlay').style.display = 'none';
+  const overlay = document.getElementById('authOverlay');
+  const input = document.getElementById('authInput');
+  const errEl = document.getElementById('authError');
+  overlay.style.display = 'flex';
+  errEl.textContent = errorMsg || '';
+  input.value = '';
+  setTimeout(()=>input.focus(), 50);
+  function trySubmit(){
+    if(input.value === GESTOR_SECRET){
+      try{ sessionStorage.setItem('qsms_gestor_secret', input.value); }catch(e){}
+      overlay.style.display = 'none';
+      render();
+    } else {
+      errEl.textContent = 'Senha incorreta. Tente de novo.';
+      input.value = '';
+      input.focus();
+    }
+  }
+  document.getElementById('authSubmitBtn').onclick = trySubmit;
+  input.onkeydown = (e)=>{ if(e.key==='Enter') trySubmit(); };
+  document.getElementById('authBackBtn').onclick = ()=>{
+    overlay.style.display = 'none';
+    showLanding();
+  };
+}
+
+function showLanding(){
+  document.getElementById('authOverlay').style.display = 'none';
+  const overlay = document.getElementById('landingOverlay');
+  const picker = document.getElementById('landingObraPicker');
+  const sel = document.getElementById('landingObraSelect');
+  overlay.style.display = 'flex';
+  picker.style.display = 'none';
+  const obras = obrasList();
+  sel.innerHTML = obras.length
+    ? obras.map(o=>`<option value="${o.codigo}">${o.nome}</option>`).join('')
+    : '<option value="">— nenhuma obra cadastrada —</option>';
+
+  document.getElementById('landingGestorBtn').onclick = ()=>{
+    overlay.style.display = 'none';
+    showAuthGate();
+  };
+  document.getElementById('landingObraBtn').onclick = ()=>{
+    picker.style.display = picker.style.display==='none' ? 'block' : 'none';
+  };
+  document.getElementById('landingObraGoBtn').onclick = ()=>{
+    const code = sel.value;
+    if(!code) return;
+    overlay.style.display = 'none';
+    previewObra = code;
+    try{
+      const url = new URL(window.location.href);
+      url.searchParams.set('obra', code);
+      history.replaceState(null, '', url.toString());
+    }catch(e){}
+    render();
+  };
+}
+
+function backToLanding(){
+  previewObra = null;
+  try{
+    const url = new URL(window.location.href);
+    url.searchParams.delete('obra');
+    history.replaceState(null, '', url.toString());
+  }catch(e){}
+  showLanding();
+}
+
+(async function init(){
+  await loadState(); // leitura é sempre pública — carrega antes de decidir a tela
+  render();
+  if(lockedObra){ return; } // link direto ?obra=... entra direto, sem tela de escolha
+  if(isAuthed()){ return; } // gestor já autenticado nesta aba do navegador
+  showLanding();
+})();
+
+})();
+</script>
+
+</body>
+</html>
