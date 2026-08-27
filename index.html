@@ -367,6 +367,18 @@ select{
     </div>
   </div>
 
+  <div id="obraPinOverlay" style="display:none;position:fixed;inset:0;background:rgba(10,18,36,.75);z-index:1000;align-items:center;justify-content:center;padding:20px;">
+    <div style="background:#fff;border-radius:14px;max-width:360px;width:100%;padding:28px 26px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4);">
+      <div style="font-size:26px;margin-bottom:8px;">🏗️</div>
+      <div id="obraPinTitle" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:19px;color:var(--navy-800);margin-bottom:4px;">Painel da obra</div>
+      <div style="font-size:12.5px;color:var(--text-muted);margin-bottom:16px;">Digite a senha desta obra para ver o painel</div>
+      <input type="password" id="obraPinInput" placeholder="Senha da obra" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;text-align:center;margin-bottom:8px;">
+      <div id="obraPinError" style="color:#c0392b;font-size:12px;min-height:16px;margin-bottom:8px;"></div>
+      <button id="obraPinSubmitBtn" class="linkbtn" style="width:100%;justify-content:center;background:var(--navy-800);color:#fff;border-color:var(--navy-800);">Entrar</button>
+      <button id="obraPinBackBtn" style="margin-top:10px;background:none;border:none;color:var(--text-muted);font-size:12px;cursor:pointer;text-decoration:underline;">← Voltar</button>
+    </div>
+  </div>
+
   <div class="controls" id="controlsBar"></div>
 
   <div id="storageWarning" class="gestor-banner" style="display:none;background:#fdeceb;border-color:#f0b8b0;color:#7a1f1f;">
@@ -467,10 +479,23 @@ let STATE = {obras:[], acoes:[], occ:{}, obs:{}};
 let loaded = false;
 let storageAvailable = true;
 
-async function loadState(){
+async function checkPin(obraCode, pin){
+  if(!APPS_SCRIPT_URL) return {ok:true, required:false}; // sem planilha conectada, não trava (ex: dentro do Claude)
+  try{
+    const url = APPS_SCRIPT_URL+'?action=checkpin&obra='+encodeURIComponent(obraCode)+'&pin='+encodeURIComponent(pin);
+    const res = await fetch(url);
+    const data = await res.json();
+    return {ok: !!data.ok, required: !!data.required};
+  }catch(e){
+    return {ok:false, required:true, error:true};
+  }
+}
+
+async function loadState(asGestor){
   if(APPS_SCRIPT_URL){
     try{
-      const res = await fetch(APPS_SCRIPT_URL);
+      const url = asGestor ? (APPS_SCRIPT_URL+'?secret='+encodeURIComponent(GESTOR_SECRET)) : APPS_SCRIPT_URL;
+      const res = await fetch(url);
       if(!res.ok) throw new Error('resposta '+res.status);
       const data = await res.json();
       STATE = {obras: data.obras||[], acoes: data.acoes||[], occ: data.occ||{}, obs: data.obs||{}};
@@ -656,7 +681,11 @@ function pendenciasObra(obraCodigo, trimFilter){
 const params = new URLSearchParams(window.location.search);
 const lockedObra = params.get('obra'); // travamento "de verdade" via link (?obra=...)
 let previewObra = null; // travamento temporário só de tela, sem navegar (botão do olho)
-function activeLock(){ return lockedObra || previewObra; }
+function activeLock(){
+  if(previewObra) return previewObra; // pré-visualização do gestor (já autenticado, não precisa de senha da obra)
+  if(lockedObra && obraUnlocked(lockedObra)) return lockedObra;
+  return null;
+}
 let currentObra = lockedObra || (obrasList()[0] && obrasList()[0].codigo) || null;
 let currentTab = 'geral'; // 'geral' | 'preencher' | 'cadastro'
 let cadastroTrim = '2';
@@ -1189,13 +1218,14 @@ function renderCadastro(){
       <div class="section-title"><span class="bar"></span>Obras</div>
       <div class="card">
         <table class="data-table">
-          <thead><tr><th style="width:90px;">Código</th><th>Nome</th><th style="width:70px;">Início</th><th style="width:70px;">Fim</th><th style="width:80px;"></th></tr></thead>
+          <thead><tr><th style="width:90px;">Código</th><th>Nome</th><th style="width:70px;">Início</th><th style="width:70px;">Fim</th><th style="width:120px;">Senha da obra</th><th style="width:80px;"></th></tr></thead>
           <tbody>
-            ${obras.length===0 ? `<tr><td colspan="5" class="empty-cad">Nenhuma obra cadastrada.</td></tr>` : obras.map(o=>`<tr>
+            ${obras.length===0 ? `<tr><td colspan="6" class="empty-cad">Nenhuma obra cadastrada.</td></tr>` : obras.map(o=>`<tr>
               <td><input class="cad-input" data-obra="${o.codigo}" data-field="codigo" value="${o.codigo}"></td>
               <td><input class="cad-input" data-obra="${o.codigo}" data-field="nome" value="${o.nome}"></td>
               <td>${trimSelectHtml('obraInicio_'+o.codigo, o.inicio, 1, 4)}</td>
               <td>${trimSelectHtml('obraFim_'+o.codigo, o.fim, 1, 4)}</td>
+              <td><input class="cad-input" data-obra="${o.codigo}" data-field="senha" value="${o.senha||''}" placeholder="sem senha"></td>
               <td><button class="linkbtn danger-btn" data-remove-obra="${o.codigo}">Remover</button></td>
             </tr>`).join('')}
           </tbody>
@@ -1205,9 +1235,11 @@ function renderCadastro(){
           <div class="field"><label>Nome</label><input id="novaObraNome" class="cad-input" placeholder="Ex: M.440" style="width:160px;"></div>
           <div class="field"><label>Início</label>${trimSelectHtml('novaObraInicio',1,1,4)}</div>
           <div class="field"><label>Fim</label>${trimSelectHtml('novaObraFim',4,1,4)}</div>
+          <div class="field"><label>Senha (opcional)</label><input id="novaObraSenha" class="cad-input" placeholder="sem senha" style="width:120px;"></div>
           <button class="linkbtn" id="addObraBtn">+ Adicionar obra</button>
           <button class="linkbtn" id="importPadraoBtn" style="border-color:var(--border);color:var(--text-muted);">Importar cronograma QSMS 2026</button>
         </div>
+        <div class="hint" style="margin-top:8px;">Deixe a senha em branco para aquela obra continuar aberta (sem senha). Se preencher, só quem souber essa senha consegue ver os dados dessa obra específica.</div>
       </div>
     </div>
     <div class="section">
@@ -1267,7 +1299,8 @@ function attachCadastro(){
     if(findObra(codigo)){ alert('Já existe uma obra com esse código.'); return; }
     const inicio = Number(document.getElementById('novaObraInicio').value);
     const fim = Number(document.getElementById('novaObraFim').value);
-    STATE.obras.push({codigo, nome, inicio, fim});
+    const senha = document.getElementById('novaObraSenha').value.trim();
+    STATE.obras.push({codigo, nome, inicio, fim, senha});
     if(!currentObra) currentObra = codigo;
     scheduleSave(); render();
   };
@@ -1329,8 +1362,8 @@ function attachChecks(editable){
 
 function render(){
   const lockCode = activeLock();
-  if(!lockCode && needsAuth() && !isAuthed()){
-    // ainda não escolheu Sede/Obra ou não digitou a senha — não renderiza nada do modo gestor
+  if(!lockCode && (lockedObra || (needsAuth() && !isAuthed()))){
+    // ou é um link de obra ainda sem senha confirmada, ou o gestor ainda não autenticou
     modePill.textContent = '';
     controlsBar.innerHTML = '';
     content.innerHTML = '';
@@ -1434,10 +1467,17 @@ function render(){
 
 function needsAuth(){ return !lockedObra; }
 function isAuthed(){
-  if(!needsAuth()) return true;
   try{ return sessionStorage.getItem('qsms_gestor_secret') === GESTOR_SECRET; }
   catch(e){ return false; }
 }
+function obraUnlocked(code){
+  try{ return sessionStorage.getItem('qsms_obra_ok_'+code) === '1'; }
+  catch(e){ return false; }
+}
+function markObraUnlocked(code){
+  try{ sessionStorage.setItem('qsms_obra_ok_'+code, '1'); }catch(e){}
+}
+
 function showAuthGate(errorMsg){
   document.getElementById('landingOverlay').style.display = 'none';
   const overlay = document.getElementById('authOverlay');
@@ -1451,7 +1491,7 @@ function showAuthGate(errorMsg){
     if(input.value === GESTOR_SECRET){
       try{ sessionStorage.setItem('qsms_gestor_secret', input.value); }catch(e){}
       overlay.style.display = 'none';
-      render();
+      (async ()=>{ await loadState(true); render(); })();
     } else {
       errEl.textContent = 'Senha incorreta. Tente de novo.';
       input.value = '';
@@ -1466,8 +1506,47 @@ function showAuthGate(errorMsg){
   };
 }
 
+function showObraPinGate(code, errorMsg){
+  document.getElementById('landingOverlay').style.display = 'none';
+  document.getElementById('authOverlay').style.display = 'none';
+  const overlay = document.getElementById('obraPinOverlay');
+  const input = document.getElementById('obraPinInput');
+  const errEl = document.getElementById('obraPinError');
+  const titleEl = document.getElementById('obraPinTitle');
+  const obraObj = STATE.obras.find(o=>o.codigo===code);
+  titleEl.textContent = obraObj ? ('Obra '+obraObj.nome) : 'Painel da obra';
+  overlay.style.display = 'flex';
+  errEl.textContent = errorMsg || '';
+  input.value = '';
+  setTimeout(()=>input.focus(), 50);
+  const btn = document.getElementById('obraPinSubmitBtn');
+  async function trySubmit(){
+    const pin = input.value;
+    btn.disabled = true; btn.textContent = 'Verificando…';
+    const res = await checkPin(code, pin);
+    btn.disabled = false; btn.textContent = 'Entrar';
+    if(res.ok){
+      markObraUnlocked(code);
+      overlay.style.display = 'none';
+      render();
+    } else {
+      errEl.textContent = res.error ? 'Não consegui verificar agora. Tente de novo.' : 'Senha incorreta. Tente de novo.';
+      input.value = '';
+      input.focus();
+    }
+  }
+  btn.onclick = trySubmit;
+  input.onkeydown = (e)=>{ if(e.key==='Enter') trySubmit(); };
+  document.getElementById('obraPinBackBtn').onclick = ()=>{
+    const url = new URL(window.location.href);
+    url.searchParams.delete('obra');
+    window.location.href = url.toString();
+  };
+}
+
 function showLanding(){
   document.getElementById('authOverlay').style.display = 'none';
+  document.getElementById('obraPinOverlay').style.display = 'none';
   const overlay = document.getElementById('landingOverlay');
   const picker = document.getElementById('landingObraPicker');
   const sel = document.getElementById('landingObraSelect');
@@ -1488,14 +1567,10 @@ function showLanding(){
   document.getElementById('landingObraGoBtn').onclick = ()=>{
     const code = sel.value;
     if(!code) return;
-    overlay.style.display = 'none';
-    previewObra = code;
-    try{
-      const url = new URL(window.location.href);
-      url.searchParams.set('obra', code);
-      history.replaceState(null, '', url.toString());
-    }catch(e){}
-    render();
+    // navega para o link direto da obra — a verificação de senha acontece
+    // de forma unificada no carregamento inicial (init), tanto vindo daqui
+    // quanto de um link ?obra=... compartilhado direto.
+    window.location.search = '?obra='+encodeURIComponent(code);
   };
 }
 
@@ -1510,10 +1585,28 @@ function backToLanding(){
 }
 
 (async function init(){
-  await loadState(); // leitura é sempre pública — carrega antes de decidir a tela
-  render();
-  if(lockedObra){ return; } // link direto ?obra=... entra direto, sem tela de escolha
-  if(isAuthed()){ return; } // gestor já autenticado nesta aba do navegador
+  await loadState(); // leitura pública — nunca traz senha de obra nem exige nada
+  if(lockedObra){
+    if(obraUnlocked(lockedObra)){
+      render();
+      return;
+    }
+    render(); // fica em branco até confirmar a senha (ver trava no render())
+    const check = await checkPin(lockedObra, '');
+    if(!check.required){
+      markObraUnlocked(lockedObra);
+      render();
+    } else {
+      showObraPinGate(lockedObra);
+    }
+    return;
+  }
+  render(); // fica em branco se o gestor ainda não autenticou
+  if(isAuthed()){
+    await loadState(true); // recarrega já com as senhas das obras, para o cadastro
+    render();
+    return;
+  }
   showLanding();
 })();
 
